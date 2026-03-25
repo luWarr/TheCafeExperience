@@ -1,4 +1,4 @@
-body {
+#body {
   background-color: #F1F0EA;
 }
 /* ---------Broken Grid------------------
@@ -28,7 +28,7 @@ body {
 
 ---------Broken Grid------------------ */
 
-h1 {
+#h1 {
     font-family: "novecento-sans-wide", sans-serif;
     font-weight: 700;
     font-style: normal;
