@@ -18,8 +18,9 @@
       }
       body{
         margin:0;
-        padding:var(--pad);
-        font-family: var(--font), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-family: "novecento-sans-wide", sans-serif;
+        font-weight: 700;
+        font-style: normal;
         background:#fff;
         color:#111;
       }
@@ -35,14 +36,16 @@
         background:transparent;
       }
       /* place header prominently in the first row spanning two columns */
-      #cell1 { grid-column: 1 / span 2; grid-row: 1; }
-      /* place text in the first row, third column */
-      #cell2 { grid-column: 3 / span 2; grid-row: 1; align-self:center; }
-      /* image placed in row 2 spanning remaining columns */
-      #cell3 { grid-column: 1 / span 3; grid-row: 2; }
+      #cell1 { grid-column: 1 / span 3; grid-row: 1; }
+      /* place text in the first row, third column <---- Changed this to put in the 2nd row under the title */
+      #cell2 { grid-column: 1 / span 3; grid-row: 2; }
+
+       #cell3 { grid-column: 5; grid-row: 2; } /*<----- For the google from so the user has access directly from the page */
+ 
+      
       /* keep empty cells visible for layout debugging (optional) */
       .cell.empty { background:transparent; }
-      h1 { margin:0; font-size:2rem; font-weight:700; font-size: 128px; color:#252422; }
+      h1 { margin:0; font-size:5rem; color:#252422; }
       p { margin:0; font-size:1rem; color:#333; }
       img { max-width:100%; height:auto; display:block; }
     </style>
