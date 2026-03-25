@@ -29,7 +29,6 @@
         font-style: normal;
       }
 
-
       .grid {
         display:grid;
         grid-template-columns: repeat(5, 1fr);
@@ -38,22 +37,23 @@
         align-items:start;
       }
       .cell {
-        padding:12px;
+        padding:20px;
         background:transparent;
       }
       /* place header prominently in the first row spanning two columns */
-      #cell1 { grid-column: 1 / span 3; grid-row: 1; }
+      #cell1 { grid-column: 1 / span 3; grid-row: 1; padding-left:50px; }
       /* place text in the first row, third column <---- Changed this to put in the 2nd row under the title */
-      #cell2 { grid-column: 1 / span 3; grid-row: 2; }
+      #cell2 { grid-column: 1 / span 3; grid-row: 2; padding-left:50px;}
 
        #cell3 { grid-column: 5; grid-row: 2; } /*<----- For the google from so the user has access directly from the page */
  
       
       /* keep empty cells visible for layout debugging (optional) */
       .cell.empty { background:transparent; }
-      h1 { margin:0; font-size:5rem; color:#252422; }
-      p { margin:0; font-size:1rem; color:#252422; }
-      img { max-width:100%; height:auto; display:block; }
+      h1 { margin:0; font-size:8rem; color:#252422; }
+      p { margin:0; font-size:1.5rem; color:#252422; }
+      button { background-color:#C44536; color:white; padding:10px; border-radius:5px; font-size:1.5rem;}
+    
     </style>
 </head>
 <body>
@@ -68,7 +68,7 @@
     </div>
 
     <div class="cell" id="cell3">
-      <img src="images/cripplingdefeat.png" alt="Cafe image">
+        <button type="button" onClick="a">Fill out form here</button>
     </div>
 
     <!-- fill remaining grid slots (empty) -->
@@ -77,6 +77,6 @@
     <div class="cell empty"></div>
     <div class="cell empty"></div>
   </div>
-
+ <script src="script.js"></script><!-- <--------Had to add the script.js connector to the HTML file -->
 </body>
 </html>
