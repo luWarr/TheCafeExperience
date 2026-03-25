@@ -1,8 +1,7 @@
-
-.html{
-    background-color:#E0DDCF;
+body {
+  background-color: #F1F0EA;
 }
-
+/* ---------Broken Grid------------------
 .grid1{
     display: grid;
     grid-template-columns: 12fr;
@@ -25,4 +24,14 @@
     display:flex;
     justify-content: center;
     background-color:green;
+}
+
+---------Broken Grid------------------ */
+
+h1 {
+    font-family: "novecento-sans-wide", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 128px;
+    color: #252422;
 }
