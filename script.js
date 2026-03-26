@@ -174,21 +174,26 @@ function renderResponses(container, rows) {
   const headers = Object.keys(rows[0] || {});
   const tsKey = headers.find(h => /timestamp/i.test(h));
 
-  // more robust target-header detection
+  // more robust target-header detection (frequency question)
   const findHeaderByKeywords = (keys) => {
     return headers.find(h => {
       const low = (h || '').toLowerCase();
       return keys.every(k => low.includes(k));
     });
   };
-  // look for headers containing words like "go", "cafe" and "often"/"frequently"/"visit"
   const targetKey = findHeaderByKeywords(['go', 'cafe']) ||
                     findHeaderByKeywords(['cafe', 'often']) ||
                     findHeaderByKeywords(['visit', 'cafe']) ||
                     headers.find(h => /do you (go|visit).*cafe/i.test(h)) ||
                     null;
 
-  console.log('Detected targetKey for frequency question:', targetKey);
+  // detect study-mode header (work alone / work with friends / both)
+  const studyKey = headers.find(h => {
+    const low = (h || '').toLowerCase();
+    return (low.includes('work') || low.includes('study')) && (low.includes('alone') || low.includes('friend') || low.includes('both'));
+  }) || headers.find(h => /alone|friend|both/i.test(h)) || null;
+
+  console.log('Detected targetKey for frequency question:', targetKey, 'studyKey:', studyKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
@@ -227,6 +232,26 @@ function renderResponses(container, rows) {
     title.textContent = num;
     card.appendChild(title);
 
+    // Insert study-mode image (if detected)
+    if (studyKey) {
+      const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
+      let imgSrc = null;
+      if (rawStudy.includes('alone')) imgSrc = 'images/workAlone.svg';
+      else if (rawStudy.includes('both')) imgSrc = 'images/both.svg';
+      else if (rawStudy.includes('friend') || rawStudy.includes('with')) imgSrc = 'images/workWithfriends.svg';
+
+      if (imgSrc) {
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = rawStudy || 'study mode';
+        img.style.width = '100%';
+        img.style.maxHeight = '120px';
+        img.style.objectFit = 'contain';
+        img.style.margin = '6px 0 8px 0';
+        card.appendChild(img);
+      }
+    }
+
     const details = document.createElement('div');
     details.style.display = 'flex';
     details.style.flexDirection = 'column';
@@ -235,10 +260,11 @@ function renderResponses(container, rows) {
     details.style.paddingRight = '6px';
     details.style.flex = '1 1 auto';
 
-    // omit the timestamp AND the frequency question (targetKey) from the visible fields
+    // omit the timestamp, the frequency question (targetKey), and the study question (studyKey) from visible fields
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
-      if (targetKey && h === targetKey) return; // <- skip the "Do you often go to cafe's?" field entirely
+      if (targetKey && h === targetKey) return;
+      if (studyKey && h === studyKey) return;
       const val = row[h];
       if (val === undefined || val === '') return;
       const line = document.createElement('div');
