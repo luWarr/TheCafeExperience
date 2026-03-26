@@ -164,7 +164,6 @@ function renderBarChart(container, rows, numericKey) {
 /* ---------- NEW: render each response as a card ---------- */
 function renderResponses(container, rows) {
   const list = document.createElement('div');
-  // fixed 5-column layout with each column 270px, centered
   list.style.display = 'grid';
   list.style.gridTemplateColumns = 'repeat(5, 270px)';
   list.style.gap = '16px';
@@ -175,14 +174,24 @@ function renderResponses(container, rows) {
   const headers = Object.keys(rows[0] || {});
   const tsKey = headers.find(h => /timestamp/i.test(h));
 
-  // normalize helper to match the target question robustly
-  const normalize = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
-  const targetNorm = normalize("Do you go to Cafe's often?");
-  const targetKey = headers.find(h => normalize(h) === targetNorm) || headers.find(h => normalize(h).includes('doyougocaf') || normalize(h).includes('go to cafe')) || null;
+  // more robust target-header detection
+  const findHeaderByKeywords = (keys) => {
+    return headers.find(h => {
+      const low = (h || '').toLowerCase();
+      return keys.every(k => low.includes(k));
+    });
+  };
+  // look for headers containing words like "go", "cafe" and "often"/"frequently"/"visit"
+  const targetKey = findHeaderByKeywords(['go', 'cafe']) ||
+                    findHeaderByKeywords(['cafe', 'often']) ||
+                    findHeaderByKeywords(['visit', 'cafe']) ||
+                    headers.find(h => /do you (go|visit).*cafe/i.test(h)) ||
+                    null;
+
+  console.log('Detected targetKey for frequency question:', targetKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
-    // fixed card size 270x420
     card.style.width = '270px';
     card.style.height = '420px';
     card.style.boxSizing = 'border-box';
@@ -195,17 +204,21 @@ function renderResponses(container, rows) {
     card.style.flexDirection = 'column';
     card.style.overflow = 'hidden';
 
-    // set background color based on the response to the target question
-    let bg = '#ffffff'; // default
+    // determine bg color from the detected answer (robust matching)
+    let bg = '#ffffff';
     if (targetKey) {
-      const ans = String(row[targetKey] || '').trim().toLowerCase();
-      if (ans === 'yes') bg = '#FFC12B';
-      else if (ans === 'no') bg = '#EDEBD7';
-      else if (ans === 'depends on the day' || ans.includes('depends')) bg = '#F5A4A3';
+      const raw = String(row[targetKey] || '').trim();
+      const ans = raw.toLowerCase();
+      if (ans === 'yes' || ans.startsWith('y')) bg = '#FFC12B';
+      else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
+      else if (ans.includes('depend')) bg = '#F5A4A3';
+      // log first few values to help debugging
+      if (i < 2) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
+    } else {
+      if (i === 0) console.warn('Frequency question header not found; card coloring skipped.');
     }
     card.style.background = bg;
 
-    // numeric title like "01", "02"
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0 0 8px 0';
@@ -214,18 +227,16 @@ function renderResponses(container, rows) {
     title.textContent = num;
     card.appendChild(title);
 
-    // details (skip timestamp field)
     const details = document.createElement('div');
     details.style.display = 'flex';
     details.style.flexDirection = 'column';
     details.style.gap = '6px';
-    // make details scrollable if content exceeds card height
     details.style.overflowY = 'auto';
     details.style.paddingRight = '6px';
     details.style.flex = '1 1 auto';
 
     headers.forEach(h => {
-      if (tsKey && h === tsKey) return; // omit timestamp column
+      if (tsKey && h === tsKey) return;
       const val = row[h];
       if (val === undefined || val === '') return;
       const line = document.createElement('div');
