@@ -164,23 +164,32 @@ function renderBarChart(container, rows, numericKey) {
 /* ---------- NEW: render each response as a card ---------- */
 function renderResponses(container, rows) {
   const list = document.createElement('div');
-  // fixed 4-column layout
+  // fixed 5-column layout with each column 270px, centered
   list.style.display = 'grid';
-  list.style.gridTemplateColumns = 'repeat(4, minmax(0, 1fr))';
-  list.style.gap = '12px';
+  list.style.gridTemplateColumns = 'repeat(5, 270px)';
+  list.style.gap = '16px';
   list.style.marginTop = '12px';
+  list.style.justifyContent = 'center';
+  list.style.justifyItems = 'center';
 
   const headers = Object.keys(rows[0] || {});
   const tsKey = headers.find(h => /timestamp/i.test(h));
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
+    // fixed card size 270x420
+    card.style.width = '270px';
+    card.style.height = '420px';
+    card.style.boxSizing = 'border-box';
     card.style.border = '1px solid #e8e8e8';
     card.style.borderRadius = '8px';
     card.style.padding = '12px';
     card.style.background = '#fff';
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
     card.style.fontSize = '14px';
+    card.style.display = 'flex';
+    card.style.flexDirection = 'column';
+    card.style.overflow = 'hidden';
 
     // numeric title like "01", "02", ...
     const num = String(i + 1).padStart(2, '0');
@@ -196,6 +205,10 @@ function renderResponses(container, rows) {
     details.style.display = 'flex';
     details.style.flexDirection = 'column';
     details.style.gap = '6px';
+    // make details scrollable if content exceeds card height
+    details.style.overflowY = 'auto';
+    details.style.paddingRight = '6px';
+    details.style.flex = '1 1 auto';
 
     headers.forEach(h => {
       if (tsKey && h === tsKey) return; // omit timestamp column
