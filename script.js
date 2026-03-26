@@ -164,8 +164,9 @@ function renderBarChart(container, rows, numericKey) {
 /* ---------- NEW: render each response as a card ---------- */
 function renderResponses(container, rows) {
   const list = document.createElement('div');
+  // changed to fixed 4-column layout (responsive fallback handled by minmax)
   list.style.display = 'grid';
-  list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(260px, 1fr))';
+  list.style.gridTemplateColumns = 'repeat(4, minmax(0, 1fr))';
   list.style.gap = '12px';
   list.style.marginTop = '12px';
 
@@ -244,11 +245,6 @@ function render(rows) {
   } else {
     container.innerHTML = '';
   }
-
-  const title = document.createElement('h2');
-  title.textContent = 'Live Responses (preview)';
-  title.style.margin = '0 0 8px 0';
-  container.appendChild(title);
 
   if (!rows.length) {
     const msg = document.createElement('p');
