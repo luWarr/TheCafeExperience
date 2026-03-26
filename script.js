@@ -209,20 +209,20 @@ function renderResponses(container, rows) {
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
       const ans = raw.toLowerCase();
-      if (ans === 'yes' || ans.startsWith('y')) bg = '#FFC12B';
+      if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
       else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
       else if (ans.includes('depend')) bg = '#F5A4A3';
-      // log first few values to help debugging
       if (i < 2) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
     } else {
       if (i === 0) console.warn('Frequency question header not found; card coloring skipped.');
     }
     card.style.background = bg;
 
+    // Heading number for the cards (IE ORDER NUMBER)
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0 0 8px 0';
-    title.style.fontSize = '48px';
+    title.style.fontSize = '50px';
     title.style.color = '#252422';
     title.textContent = num;
     card.appendChild(title);
@@ -235,8 +235,10 @@ function renderResponses(container, rows) {
     details.style.paddingRight = '6px';
     details.style.flex = '1 1 auto';
 
+    // omit the timestamp AND the frequency question (targetKey) from the visible fields
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
+      if (targetKey && h === targetKey) return; // <- skip the "Do you often go to cafe's?" field entirely
       const val = row[h];
       if (val === undefined || val === '') return;
       const line = document.createElement('div');
