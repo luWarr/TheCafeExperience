@@ -160,6 +160,74 @@ function renderBarChart(container, rows, numericKey) {
   ctx.fillText(`Metric: ${numericKey} (by ${labelKey || 'row'})`, padding, 16);
 }
 
+/* ---------- NEW: render each response as a card ---------- */
+function renderResponses(container, rows) {
+  const list = document.createElement('div');
+  list.style.display = 'grid';
+  list.style.gridTemplateColumns = 'repeat(auto-fit, minmax(260px, 1fr))';
+  list.style.gap = '12px';
+  list.style.marginTop = '12px';
+
+  const headers = Object.keys(rows[0] || {});
+
+  rows.forEach((row, i) => {
+    const card = document.createElement('article');
+    card.style.border = '1px solid #e8e8e8';
+    card.style.borderRadius = '8px';
+    card.style.padding = '12px';
+    card.style.background = '#fff';
+    card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
+    card.style.fontSize = '14px';
+
+    // title: prefer Timestamp-like field
+    const tsKey = headers.find(h => /timestamp/i.test(h));
+    const title = document.createElement('h4');
+    title.style.margin = '0 0 8px 0';
+    title.style.fontSize = '15px';
+    title.style.color = '#222';
+    title.textContent = tsKey ? (row[tsKey] || `Response #${i+1}`) : `Response #${i+1}`;
+    card.appendChild(title);
+
+    // details
+    const details = document.createElement('div');
+    details.style.display = 'flex';
+    details.style.flexDirection = 'column';
+    details.style.gap = '6px';
+
+    headers.forEach(h => {
+      const val = row[h];
+      // skip showing an empty field
+      if (val === undefined || val === '') return;
+      const line = document.createElement('div');
+      line.style.display = 'flex';
+      line.style.justifyContent = 'space-between';
+      line.style.gap = '8px';
+
+      const keyEl = document.createElement('strong');
+      keyEl.style.fontWeight = '600';
+      keyEl.style.fontSize = '13px';
+      keyEl.textContent = h;
+
+      const valEl = document.createElement('span');
+      valEl.style.fontWeight = '400';
+      valEl.style.opacity = '0.95';
+      valEl.style.marginLeft = '8px';
+      valEl.style.whiteSpace = 'pre-wrap';
+      valEl.textContent = val;
+
+      line.appendChild(keyEl);
+      line.appendChild(valEl);
+      details.appendChild(line);
+    });
+
+    card.appendChild(details);
+    list.appendChild(card);
+  });
+
+  container.appendChild(list);
+}
+/* ---------- end new code ---------- */
+
 /* main render */
 function render(rows) {
   // create or clear container
@@ -188,7 +256,8 @@ function render(rows) {
     return;
   }
 
-  renderTable(container, rows, 15);
+  // Show each individual response as a card
+  renderResponses(container, rows);
 
   const numeric = detectNumericColumns(rows);
   if (numeric.length) {
@@ -199,7 +268,7 @@ function render(rows) {
     renderBarChart(container, rows, numeric[0]);
   } else {
     const note = document.createElement('p');
-    note.textContent = 'No numeric column detected for charting. Inspect table for values.';
+    note.textContent = 'No numeric column detected for charting. Inspect cards for values.';
     container.appendChild(note);
   }
 
