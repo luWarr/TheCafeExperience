@@ -175,6 +175,11 @@ function renderResponses(container, rows) {
   const headers = Object.keys(rows[0] || {});
   const tsKey = headers.find(h => /timestamp/i.test(h));
 
+  // normalize helper to match the target question robustly
+  const normalize = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+  const targetNorm = normalize("Do you go to Cafe's often?");
+  const targetKey = headers.find(h => normalize(h) === targetNorm) || headers.find(h => normalize(h).includes('doyougocaf') || normalize(h).includes('go to cafe')) || null;
+
   rows.forEach((row, i) => {
     const card = document.createElement('article');
     // fixed card size 270x420
@@ -184,14 +189,23 @@ function renderResponses(container, rows) {
     card.style.border = '1px solid #e8e8e8';
     card.style.borderRadius = '8px';
     card.style.padding = '12px';
-    card.style.background = '#fff';
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
     card.style.fontSize = '14px';
     card.style.display = 'flex';
     card.style.flexDirection = 'column';
     card.style.overflow = 'hidden';
 
-    // numeric title like "01", "02", Titles for the cards 
+    // set background color based on the response to the target question
+    let bg = '#ffffff'; // default
+    if (targetKey) {
+      const ans = String(row[targetKey] || '').trim().toLowerCase();
+      if (ans === 'yes') bg = '#FFC12B';
+      else if (ans === 'no') bg = '#EDEBD7';
+      else if (ans === 'depends on the day' || ans.includes('depends')) bg = '#F5A4A3';
+    }
+    card.style.background = bg;
+
+    // numeric title like "01", "02"
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0 0 8px 0';
