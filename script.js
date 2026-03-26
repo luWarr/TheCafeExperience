@@ -46,16 +46,14 @@ function detectNumericColumns(rows) {
   const keys = Object.keys(rows[0] || {});
   const numeric = [];
   keys.forEach(k => {
-    let count = 0, total = 0;
+    let count = 0;
     for (const r of rows) {
-      const v = r[k].replace(/[$,]/g, '');
-      if (v === '') continue;
-      const n = Number(v);
+      const raw = (r[k] ?? '').toString().replace(/[$,]/g, '');
+      if (raw === '') continue;
+      const n = Number(raw);
       if (!Number.isFinite(n)) continue;
       count++;
-      total++;
     }
-    // if many rows parse as numbers, consider numeric
     if (count / Math.max(1, rows.length) > 0.4) numeric.push(k);
   });
   return numeric;
@@ -108,12 +106,11 @@ function renderBarChart(container, rows, numericKey) {
 
   const ctx = canvas.getContext('2d');
   const values = rows.map(r => {
-    const v = r[numericKey].replace(/[$,]/g, '');
+    const v = (r[numericKey] ?? '').toString().replace(/[$,]/g, '');
     const n = parseFloat(v);
     return Number.isFinite(n) ? n : 0;
   });
 
-  // aggregate by label if there is a meaningful label column
   const labelCandidates = Object.keys(rows[0] || {}).filter(k => k !== numericKey);
   const labelKey = labelCandidates[0] || null;
   let labels = [];
@@ -123,7 +120,7 @@ function renderBarChart(container, rows, numericKey) {
     const map = new Map();
     rows.forEach((r, i) => {
       const label = (r[labelKey] || `row ${i+1}`).toString();
-      const v = parseFloat(r[numericKey].replace(/[$,]/g,'')) || 0;
+      const v = parseFloat((r[numericKey] ?? '').toString().replace(/[$,]/g,'')) || 0;
       map.set(label, (map.get(label) || 0) + v);
     });
     labels = Array.from(map.keys()).slice(0, 12);
@@ -151,17 +148,15 @@ function renderBarChart(container, rows, numericKey) {
     ctx.fillStyle = '#222';
     ctx.font = '11px sans-serif';
     ctx.fillText(labels[i], x, padding + chartH + 12);
-    // value label
     ctx.fillText(String(Math.round(v*100)/100), x, y - 6);
   });
 
-  // title
   ctx.fillStyle = '#111';
   ctx.font = '14px sans-serif';
   ctx.fillText(`Metric: ${numericKey} (by ${labelKey || 'row'})`, padding, 16);
 }
 
-/* ---------- NEW: render each response as a card ---------- */
+/* ---------- NEW: render each response as a card (fixed & completed) ---------- */
 function renderResponses(container, rows) {
   const list = document.createElement('div');
   list.style.display = 'grid';
@@ -174,7 +169,7 @@ function renderResponses(container, rows) {
   const headers = Object.keys(rows[0] || {});
   const tsKey = headers.find(h => /timestamp/i.test(h));
 
-  // more robust target-header detection (frequency question)
+  // robust frequency header detection
   const findHeaderByKeywords = (keys) => {
     return headers.find(h => {
       const low = (h || '').toLowerCase();
@@ -190,33 +185,33 @@ function renderResponses(container, rows) {
   // detect study-mode header (work alone / work with friends / both)
   const studyKey = headers.find(h => {
     const low = (h || '').toLowerCase();
-    return (low.includes('work') || low.includes('study')) && (low.includes('alone') || low.includes('friend') || low.includes('both'));
-  }) || headers.find(h => /alone|friend|both/i.test(h)) || null;
+    return (low.includes('work') || low.includes('study') || low.includes('alone') || low.includes('friend') || low.includes('both'));
+  }) || null;
 
   console.log('Detected targetKey for frequency question:', targetKey, 'studyKey:', studyKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
 
-    // fixed card size 270x420, same padding, add 5px margin
+    // card size, padding and margin
     card.style.width = '270px';
     card.style.height = '420px';
     card.style.boxSizing = 'border-box';
     card.style.border = '1px solid #e8e8e8';
     card.style.borderRadius = '8px';
-    card.style.padding = '12px';             // keep same padding
-    card.style.margin = '5px';               // requested margin
+    card.style.padding = '12px';
+    card.style.margin = '5px';
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
     card.style.fontSize = '14px';
     card.style.overflow = 'hidden';
 
-    // change card layout to a grid with 5 rows and 2 columns
+    // 5 rows x 2 columns grid inside the card
     card.style.display = 'grid';
-    card.style.gridTemplateColumns = '1fr 1fr';             // 2 columns
-    card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr'; // 5 rows (adjust sizes)
+    card.style.gridTemplateColumns = '1fr 1fr';
+    card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr';
     card.style.gap = '8px';
 
-    // determine bg color from the detected answer (robust matching)
+    // background color based on frequency answer (use exact colors requested)
     let bg = '#ffffff';
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
@@ -224,24 +219,22 @@ function renderResponses(container, rows) {
       if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
       else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
       else if (ans.includes('depend')) bg = '#F5A4A3';
-      if (i < 2) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
-    } else {
-      if (i === 0) console.warn('Frequency question header not found; card coloring skipped.');
+      if (i < 3) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
     }
     card.style.background = bg;
 
-    // numeric title like "01", "02" placed in row 1 spanning both columns
+    // numeric title spanning both columns (row 1)
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0';
     title.style.fontSize = '28px';
     title.style.color = '#252422';
     title.textContent = num;
-    title.style.gridColumn = '1 / -1'; // span both columns
+    title.style.gridColumn = '1 / -1';
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
-    // Insert study-mode image (if detected) into row 2 spanning both columns
+    // study-mode image spanning both columns (row 2)
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
       let imgSrc = null;
@@ -271,14 +264,119 @@ function renderResponses(container, rows) {
     details.style.overflowY = 'auto';
     details.style.paddingRight = '6px';
     details.style.gridColumn = '1 / -1';
-    details.style.gridRow = '3 / 6'; // rows 3,4,5
+    details.style.gridRow = '3 / 6';
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
-    // omit the timestamp, the frequency question (targetKey), and the study question (studyKey) from visible fields
+    // omit timestamp, frequency question, and study question from visible fields
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
       if (targetKey && h === targetKey) return;
       if (studyKey && h === studyKey) return;
       const val = row[h];
-      if
+      if (val === undefined || val === '') return;
+
+      // display each field as two-column row inside details
+      const line = document.createElement('div');
+      line.style.display = 'grid';
+      line.style.gridTemplateColumns = '1fr 1fr';
+      line.style.gap = '8px';
+      line.style.alignItems = 'start';
+
+      const keyEl = document.createElement('div');
+      keyEl.style.fontWeight = '600';
+      keyEl.style.fontSize = '13px';
+      keyEl.textContent = h;
+
+      const valEl = document.createElement('div');
+      valEl.style.fontWeight = '400';
+      valEl.style.opacity = '0.95';
+      valEl.style.whiteSpace = 'pre-wrap';
+      valEl.textContent = val;
+
+      line.appendChild(keyEl);
+      line.appendChild(valEl);
+      details.appendChild(line);
+    });
+
+    list.appendChild(card);
+  });
+
+  container.appendChild(list);
+}
+
+/* main render */
+function render(rows) {
+  let container = document.getElementById('viz-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'viz-container';
+    container.style.padding = '20px';
+    container.style.maxWidth = '1400px';
+    container.style.margin = '18px auto';
+    container.style.borderTop = '1px solid #eee';
+    document.body.appendChild(container);
+  } else {
+    container.innerHTML = '';
+  }
+
+  if (!rows.length) {
+    const msg = document.createElement('p');
+    msg.textContent = 'No data available.';
+    container.appendChild(msg);
+    return;
+  }
+
+  // show response cards
+  renderResponses(container, rows);
+
+  const numeric = detectNumericColumns(rows);
+  if (numeric.length) {
+    const chartTitle = document.createElement('h3');
+    chartTitle.textContent = 'Simple chart';
+    chartTitle.style.marginTop = '12px';
+    container.appendChild(chartTitle);
+    renderBarChart(container, rows, numeric[0]);
+  } else {
+    const note = document.createElement('p');
+    note.textContent = 'No numeric column detected for charting. Inspect cards for values.';
+    container.appendChild(note);
+  }
+
+  const reload = document.createElement('button');
+  reload.textContent = 'Reload data';
+  reload.style.marginTop = '12px';
+  reload.onclick = loadAndRender;
+  container.appendChild(reload);
+}
+
+/* fetch and render */
+async function loadAndRender() {
+  let container = document.getElementById('viz-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'viz-container';
+    container.style.padding = '20px';
+    container.style.maxWidth = '1400px';
+    container.style.margin = '18px auto';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = '<p>Loading live responses…</p>';
+
+  try {
+    console.log('Requesting', CSV_URL);
+    const res = await fetch(CSV_URL);
+    if (!res.ok) {
+      const body = await res.text().catch(() => '<no body>');
+      throw new Error(`${res.status} ${res.statusText} — ${body}`);
+    }
+    const text = await res.text();
+    const rows = parseCSV(text);
+    render(rows);
+  } catch (err) {
+    container.innerHTML = `<p>Error loading data: ${err.message}</p>`;
+    console.error('CSV fetch error', err, 'URL:', CSV_URL);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadAndRender);
