@@ -191,12 +191,12 @@ function renderResponses(container, rows) {
     card.style.flexDirection = 'column';
     card.style.overflow = 'hidden';
 
-    // numeric title like "01", "02", ...
+    // numeric title like "01", "02", Titles for the cards 
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0 0 8px 0';
-    title.style.fontSize = '15px';
-    title.style.color = '#222';
+    title.style.fontSize = '48px';
+    title.style.color = '#252422';
     title.textContent = num;
     card.appendChild(title);
 
