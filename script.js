@@ -1,4 +1,5 @@
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRK1dytJ7DNbo6JN0bPRRIGTa1WT25SXnoFgRttur1y7W_0NFBu7kO7  11i39Q8hmY5tDTq5V78Mjg8RP/pub?output=csv'.replace(/\s+/g,'');
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRK1dytJ7DNbo6JN0bPRRIGTa1WT25SXnoFgRttur1y7W_0NFBu7kO11i39Q8hmY5tDTq5V78Mjg8RP/pub?output=csv';
+console.log('Fetching CSV from:', CSV_URL);
 
 /* Robust CSV splitter that handles quoted fields */
 function splitCSVRow(row) {
