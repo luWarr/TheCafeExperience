@@ -197,17 +197,24 @@ function renderResponses(container, rows) {
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
+
+    // fixed card size 270x420, same padding, add 5px margin
     card.style.width = '270px';
     card.style.height = '420px';
     card.style.boxSizing = 'border-box';
     card.style.border = '1px solid #e8e8e8';
     card.style.borderRadius = '8px';
-    card.style.padding = '12px';
+    card.style.padding = '12px';             // keep same padding
+    card.style.margin = '5px';               // requested margin
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
     card.style.fontSize = '14px';
-    card.style.display = 'flex';
-    card.style.flexDirection = 'column';
     card.style.overflow = 'hidden';
+
+    // change card layout to a grid with 5 rows and 2 columns
+    card.style.display = 'grid';
+    card.style.gridTemplateColumns = '1fr 1fr';             // 2 columns
+    card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr'; // 5 rows (adjust sizes)
+    card.style.gap = '8px';
 
     // determine bg color from the detected answer (robust matching)
     let bg = '#ffffff';
@@ -223,16 +230,18 @@ function renderResponses(container, rows) {
     }
     card.style.background = bg;
 
-    // Heading number for the cards (IE ORDER NUMBER)
+    // numeric title like "01", "02" placed in row 1 spanning both columns
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
-    title.style.margin = '0 0 8px 0';
-    title.style.fontSize = '50px';
+    title.style.margin = '0';
+    title.style.fontSize = '28px';
     title.style.color = '#252422';
     title.textContent = num;
+    title.style.gridColumn = '1 / -1'; // span both columns
+    title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
-    // Insert study-mode image (if detected)
+    // Insert study-mode image (if detected) into row 2 spanning both columns
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
       let imgSrc = null;
@@ -245,20 +254,26 @@ function renderResponses(container, rows) {
         img.src = imgSrc;
         img.alt = rawStudy || 'study mode';
         img.style.width = '100%';
-        img.style.maxHeight = '120px';
+        img.style.height = '100%';
         img.style.objectFit = 'contain';
-        img.style.margin = '6px 0 8px 0';
+        img.style.margin = '0';
+        img.style.gridColumn = '1 / -1';
+        img.style.gridRow = '2 / 3';
         card.appendChild(img);
       }
     }
 
+    // details container occupies rows 3-5 and spans both columns
     const details = document.createElement('div');
     details.style.display = 'flex';
     details.style.flexDirection = 'column';
     details.style.gap = '6px';
     details.style.overflowY = 'auto';
     details.style.paddingRight = '6px';
-    details.style.flex = '1 1 auto';
+    details.style.gridColumn = '1 / -1';
+    details.style.gridRow = '3 / 6'; // rows 3,4,5
+    details.style.paddingTop = '6px';
+    card.appendChild(details);
 
     // omit the timestamp, the frequency question (targetKey), and the study question (studyKey) from visible fields
     headers.forEach(h => {
@@ -266,108 +281,4 @@ function renderResponses(container, rows) {
       if (targetKey && h === targetKey) return;
       if (studyKey && h === studyKey) return;
       const val = row[h];
-      if (val === undefined || val === '') return;
-      const line = document.createElement('div');
-      line.style.display = 'flex';
-      line.style.justifyContent = 'space-between';
-      line.style.gap = '8px';
-
-      const keyEl = document.createElement('strong');
-      keyEl.style.fontWeight = '600';
-      keyEl.style.fontSize = '13px';
-      keyEl.textContent = h;
-
-      const valEl = document.createElement('span');
-      valEl.style.fontWeight = '400';
-      valEl.style.opacity = '0.95';
-      valEl.style.marginLeft = '8px';
-      valEl.style.whiteSpace = 'pre-wrap';
-      valEl.textContent = val;
-
-      line.appendChild(keyEl);
-      line.appendChild(valEl);
-      details.appendChild(line);
-    });
-
-    card.appendChild(details);
-    list.appendChild(card);
-  });
-
-  container.appendChild(list);
-}
-/* ---------- end new code ---------- */
-
-/* main render */
-function render(rows) {
-  // create or clear container
-  let container = document.getElementById('viz-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'viz-container';
-    container.style.padding = '20px';
-    container.style.maxWidth = '980px';
-    container.style.margin = '18px auto';
-    container.style.borderTop = '1px solid #eee';
-    document.body.appendChild(container);
-  } else {
-    container.innerHTML = '';
-  }
-
-  if (!rows.length) {
-    const msg = document.createElement('p');
-    msg.textContent = 'No data available.';
-    container.appendChild(msg);
-    return;
-  }
-
-  // Show each individual response as a card
-  renderResponses(container, rows);
-
-  const numeric = detectNumericColumns(rows);
-  if (numeric.length) {
-    const chartTitle = document.createElement('h3');
-    chartTitle.textContent = 'Simple chart';
-    chartTitle.style.marginTop = '12px';
-    container.appendChild(chartTitle);
-    renderBarChart(container, rows, numeric[0]);
-  } else {
-    const note = document.createElement('p');
-    note.textContent = 'No numeric column detected for charting. Inspect cards for values.';
-    container.appendChild(note);
-  }
-
-  // reload button
-  const reload = document.createElement('button');
-  reload.textContent = 'Reload data';
-  reload.style.marginTop = '12px';
-  reload.onclick = loadAndRender;
-  container.appendChild(reload);
-}
-
-/* fetch and render */
-async function loadAndRender() {
-  // show loader
-  let container = document.getElementById('viz-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'viz-container';
-    container.style.padding = '20px';
-    container.style.maxWidth = '980px';
-    container.style.margin = '18px auto';
-    document.body.appendChild(container);
-  }
-  container.innerHTML = '<p>Loading live responses…</p>';
-
-  try {
-    const res = await fetch(CSV_URL);
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    render(rows);
-  } catch (err) {
-    container.innerHTML = `<p>Error loading data: ${err.message}</p>`;
-    console.error('CSV fetch error', err);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', loadAndRender);
+      if
