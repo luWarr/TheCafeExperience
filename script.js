@@ -307,8 +307,8 @@ function renderResponses(container, rows) {
         pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 3';
-        pImg.style.gridRow = '2 / 3';
+        pImg.style.gridColumn = '2 / 1';
+        pImg.style.gridRow = '2 / 1';
         pImg.style.justifySelf = 'center';
         pImg.style.alignSelf = 'center';
         card.appendChild(pImg);
