@@ -293,8 +293,8 @@ function renderResponses(container, rows) {
       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
       let prefImg = null;
       if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
-      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
-      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
 
 
       if (prefImg) {
@@ -353,16 +353,7 @@ function renderResponses(container, rows) {
       valEl.style.fontWeight = '400';
       valEl.style.opacity = '0.95';
       valEl.style.whiteSpace = 'pre-wrap';
-      // map long-form productivity responses to percentages
-      let displayVal = val;
-      if (keyText === 'Productivity:') {
-        const norm = (val || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (norm === 'lotsofwork') displayVal = '100%';
-        else if (norm === 'adecentamount') displayVal = '75%';
-        else if (norm === 'gotsomestuffdonebutnotalot') displayVal = '25%';
-        else if (norm === 'ibarelytouchmywork') displayVal = '5%';
-      }
-      valEl.textContent = displayVal;
+      valEl.textContent = val;
 
       line.appendChild(keyEl);
       line.appendChild(valEl);
