@@ -221,8 +221,8 @@ function renderResponses(container, rows) {
     // 5 rows x 2 columns grid inside the card
     card.style.display = 'grid';
     card.style.gridTemplateColumns = '1fr 1fr';
-    card.style.gridTemplateRows = 'auto 40px 1fr 1fr 1fr';
-    // card.style.gap = '8px';
+    card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr';
+    card.style.gap = '8px';
 
     // background color based on frequency answer
     let bg = '#ffffff';
@@ -240,7 +240,7 @@ function renderResponses(container, rows) {
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0';
-    title.style.fontSize = '65px';
+    title.style.fontSize = '48px';
     title.style.color = '#252422';
     title.textContent = num;
     title.style.gridColumn = '1 / 2';
@@ -256,7 +256,7 @@ function renderResponses(container, rows) {
         timeEl.style.gridColumn = '1 / 2';
         timeEl.style.gridRow = '2 / 3';
         timeEl.style.alignSelf = 'center';
-        timeEl.style.justifySelf = 'end';
+        timeEl.style.justifySelf = 'start';
         timeEl.style.fontSize = '14px';
         timeEl.style.fontWeight = '600';
         timeEl.style.padding = '4px 6px';
@@ -307,9 +307,9 @@ function renderResponses(container, rows) {
         pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 1';
+        pImg.style.gridColumn = '2 / 3';
         pImg.style.gridRow = '2 / 3';
-        pImg.style.justifySelf = 'start';
+        pImg.style.justifySelf = 'center';
         pImg.style.alignSelf = 'center';
         card.appendChild(pImg);
       }
@@ -347,11 +347,7 @@ function renderResponses(container, rows) {
       const keyEl = document.createElement('div');
       keyEl.style.fontWeight = '600';
       keyEl.style.fontSize = '13px';
-      // replace the long question with the shorter label "productivity:"
-      const keyText = /how much work do you normally get done in cafe'?s\?/i.test(h)
-        ? 'productivity:'
-        : h;
-      keyEl.textContent = keyText;
+      keyEl.textContent = h;
 
       const valEl = document.createElement('div');
       valEl.style.fontWeight = '400';
@@ -359,7 +355,7 @@ function renderResponses(container, rows) {
       valEl.style.whiteSpace = 'pre-wrap';
       // map long-form productivity responses to percentages
       let displayVal = val;
-      if (keyText === 'Productivity:') {
+      if (keyText === 'productivity:') {
         const norm = (val || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
         if (norm === 'lotsofwork') displayVal = '100%';
         else if (norm === 'adecentamount') displayVal = '75%';
