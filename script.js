@@ -188,13 +188,20 @@ function renderResponses(container, rows) {
     return (low.includes('work') || low.includes('study') || low.includes('alone') || low.includes('friend') || low.includes('both'));
   }) || null;
 
-  // detect time-on-cafe header (match variations of the question)
+  // detect time-on-cafe header (how long)
   const timeKey = headers.find(h => {
     const low = (h || '').toLowerCase();
     return /how long|normally work|regular day|work in a cafe|how many hours/.test(low);
   }) || null;
 
-  console.log('Detected targetKey for frequency question:', targetKey, 'studyKey:', studyKey, 'timeKey:', timeKey);
+  // detect preferred time-of-day header (the question to remove and replace with image)
+  const timePrefKey = headers.find(h => {
+    const low = (h || '').toLowerCase();
+    return /specific time of day|time of day|prefer studying|prefer.*studying|time.*prefer/i.test(low) ||
+           /mornings|afternoons|nights|morning|afternoon|night/i.test(low);
+  }) || null;
+
+  console.log('Detected keys -> freq:', targetKey, 'study:', studyKey, 'timeLen:', timeKey, 'timePref:', timePrefKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
@@ -217,7 +224,7 @@ function renderResponses(container, rows) {
     card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr';
     card.style.gap = '8px';
 
-    // background color based on frequency answer (use exact colors requested)
+    // background color based on frequency answer
     let bg = '#ffffff';
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
@@ -236,11 +243,11 @@ function renderResponses(container, rows) {
     title.style.fontSize = '48px';
     title.style.color = '#252422';
     title.textContent = num;
-    title.style.gridColumn = '1 / 2';   // first column only
+    title.style.gridColumn = '1 / 2';
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
-    // move the time response into row 2 column 1 (omit label)
+    // move the time length response into row 2 column 1 (omit label)
     if (timeKey) {
       const timeVal = String(row[timeKey] || '').trim();
       if (timeVal) {
@@ -259,7 +266,7 @@ function renderResponses(container, rows) {
       }
     }
 
-    // study-mode image moved to first row, second column
+    // study-mode image in first row, second column (unchanged)
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
       let imgSrc = null;
@@ -275,10 +282,31 @@ function renderResponses(container, rows) {
         img.style.height = '100%';
         img.style.objectFit = 'contain';
         img.style.margin = '0';
-        // place in first row, second column
         img.style.gridColumn = '2 / 3';
         img.style.gridRow = '1 / 2';
         card.appendChild(img);
+      }
+    }
+
+    // preferred time-of-day: replace text with image in row 2 column 2, omit the question text from details
+    if (timePrefKey) {
+      const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
+      let prefImg = null;
+      if (rawPref.includes('morn')) prefImg = 'images/morning.png';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
+
+      if (prefImg) {
+        const pImg = document.createElement('img');
+        pImg.src = prefImg;
+        pImg.alt = rawPref || 'preferred time';
+        pImg.style.width = '100%';
+        pImg.style.height = '100%';
+        pImg.style.objectFit = 'contain';
+        pImg.style.margin = '0';
+        pImg.style.gridColumn = '2 / 3';
+        pImg.style.gridRow = '2 / 3';
+        card.appendChild(pImg);
       }
     }
 
@@ -294,12 +322,13 @@ function renderResponses(container, rows) {
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
-    // omit timestamp, frequency question, study question, and the time question from visible fields
+    // omit timestamp, frequency question, study question, time length question, and preferred-time question from visible fields
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
       if (targetKey && h === targetKey) return;
       if (studyKey && h === studyKey) return;
       if (timeKey && h === timeKey) return;
+      if (timePrefKey && h === timePrefKey) return;
       const val = row[h];
       if (val === undefined || val === '') return;
 
