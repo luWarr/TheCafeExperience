@@ -256,7 +256,7 @@ function renderResponses(container, rows) {
         timeEl.style.gridColumn = '1 / 2';
         timeEl.style.gridRow = '2 / 3';
         timeEl.style.alignSelf = 'center';
-        timeEl.style.justifySelf = 'start';
+        timeEl.style.justifySelf = 'end';
         timeEl.style.fontSize = '14px';
         timeEl.style.fontWeight = '600';
         timeEl.style.padding = '4px 6px';
@@ -309,7 +309,7 @@ function renderResponses(container, rows) {
         pImg.style.margin = '0';
         pImg.style.gridColumn = '2 / 1';
         pImg.style.gridRow = '2 / 3';
-        pImg.style.justifySelf = 'center';
+        pImg.style.justifySelf = 'start';
         pImg.style.alignSelf = 'center';
         card.appendChild(pImg);
       }
