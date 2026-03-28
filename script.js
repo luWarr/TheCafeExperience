@@ -292,10 +292,10 @@ function renderResponses(container, rows) {
     if (timePrefKey) {
       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
       let prefImg = null;
-      if (rawPref.includes('morn')) prefImg = 'images/morning.png';
-      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
-      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
-        else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
+      if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
+
 
       if (prefImg) {
         const pImg = document.createElement('img');
@@ -304,6 +304,7 @@ function renderResponses(container, rows) {
         // fixed size 40x40 and centered within the grid cell
         pImg.style.width = '40px';
         pImg.style.height = '40px';
+        pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
         pImg.style.gridColumn = '2 / 3';
