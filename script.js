@@ -223,18 +223,18 @@ function renderResponses(container, rows) {
     }
     card.style.background = bg;
 
-    // numeric title spanning both columns (row 1)
+    // numeric title placed in first row, first column
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0';
     title.style.fontSize = '28px';
     title.style.color = '#252422';
     title.textContent = num;
-    title.style.gridColumn = '1 / -1';
+    title.style.gridColumn = '1 / 2';   // first column only
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
-    // study-mode image spanning both columns (row 2)
+    // study-mode image moved to first row, second column
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
       let imgSrc = null;
@@ -250,8 +250,9 @@ function renderResponses(container, rows) {
         img.style.height = '100%';
         img.style.objectFit = 'contain';
         img.style.margin = '0';
-        img.style.gridColumn = '1 / -1';
-        img.style.gridRow = '2 / 3';
+        // place in first row, second column
+        img.style.gridColumn = '2 / 3';
+        img.style.gridRow = '1 / 2';
         card.appendChild(img);
       }
     }
