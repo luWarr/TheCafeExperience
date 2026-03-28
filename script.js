@@ -300,12 +300,15 @@ function renderResponses(container, rows) {
         const pImg = document.createElement('img');
         pImg.src = prefImg;
         pImg.alt = rawPref || 'preferred time';
-        pImg.style.width = '100%';
-        pImg.style.height = '100%';
+        // fixed size 40x40 and centered within the grid cell
+        pImg.style.width = '40px';
+        pImg.style.height = '40px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
         pImg.style.gridColumn = '2 / 3';
         pImg.style.gridRow = '2 / 3';
+        pImg.style.justifySelf = 'center';
+        pImg.style.alignSelf = 'center';
         card.appendChild(pImg);
       }
     }
