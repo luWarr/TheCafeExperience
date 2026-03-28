@@ -188,7 +188,13 @@ function renderResponses(container, rows) {
     return (low.includes('work') || low.includes('study') || low.includes('alone') || low.includes('friend') || low.includes('both'));
   }) || null;
 
-  console.log('Detected targetKey for frequency question:', targetKey, 'studyKey:', studyKey);
+  // detect time-on-cafe header (match variations of the question)
+  const timeKey = headers.find(h => {
+    const low = (h || '').toLowerCase();
+    return /how long|normally work|regular day|work in a cafe|how many hours/.test(low);
+  }) || null;
+
+  console.log('Detected targetKey for frequency question:', targetKey, 'studyKey:', studyKey, 'timeKey:', timeKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
@@ -234,6 +240,25 @@ function renderResponses(container, rows) {
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
+    // move the time response into row 2 column 1 (omit label)
+    if (timeKey) {
+      const timeVal = String(row[timeKey] || '').trim();
+      if (timeVal) {
+        const timeEl = document.createElement('div');
+        timeEl.textContent = timeVal;
+        timeEl.style.gridColumn = '1 / 2';
+        timeEl.style.gridRow = '2 / 3';
+        timeEl.style.alignSelf = 'center';
+        timeEl.style.justifySelf = 'start';
+        timeEl.style.fontSize = '14px';
+        timeEl.style.fontWeight = '600';
+        timeEl.style.padding = '4px 6px';
+        timeEl.style.background = 'transparent';
+        timeEl.style.borderRadius = '4px';
+        card.appendChild(timeEl);
+      }
+    }
+
     // study-mode image moved to first row, second column
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
@@ -269,11 +294,12 @@ function renderResponses(container, rows) {
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
-    // omit timestamp, frequency question, and study question from visible fields
+    // omit timestamp, frequency question, study question, and the time question from visible fields
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
       if (targetKey && h === targetKey) return;
       if (studyKey && h === studyKey) return;
+      if (timeKey && h === timeKey) return;
       const val = row[h];
       if (val === undefined || val === '') return;
 
