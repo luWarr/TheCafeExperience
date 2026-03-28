@@ -221,8 +221,8 @@ function renderResponses(container, rows) {
     // 5 rows x 2 columns grid inside the card
     card.style.display = 'grid';
     card.style.gridTemplateColumns = '1fr 1fr';
-    card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr';
-    card.style.gap = '8px';
+    card.style.gridTemplateRows = 'auto 50px 1fr 1fr 1fr';
+    // card.style.gap = '8px';
 
     // background color based on frequency answer
     let bg = '#ffffff';
@@ -240,7 +240,7 @@ function renderResponses(container, rows) {
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0';
-    title.style.fontSize = '48px';
+    title.style.fontSize = '50px';
     title.style.color = '#252422';
     title.textContent = num;
     title.style.gridColumn = '1 / 2';
@@ -256,7 +256,7 @@ function renderResponses(container, rows) {
         timeEl.style.gridColumn = '1 / 2';
         timeEl.style.gridRow = '2 / 3';
         timeEl.style.alignSelf = 'center';
-        timeEl.style.justifySelf = 'start';
+        timeEl.style.justifySelf = 'center';
         timeEl.style.fontSize = '14px';
         timeEl.style.fontWeight = '600';
         timeEl.style.padding = '4px 6px';
