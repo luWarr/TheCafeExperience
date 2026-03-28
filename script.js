@@ -158,8 +158,6 @@ function renderBarChart(container, rows, numericKey) {
 
 /* ---------- NEW: render each response as a card (fixed & completed) ---------- */
 function renderResponses(container, rows) {
-  // if caller didn't pass a container, fall back to body so we don't throw
-  if (!container) container = document.body;
   const list = document.createElement('div');
   list.style.display = 'grid';
   list.style.gridTemplateColumns = 'repeat(5, 270px)';
@@ -312,9 +310,10 @@ function renderResponses(container, rows) {
         // fixed size 40x40 and centered within the grid cell
         pImg.style.width = '40px';
         pImg.style.height = '40px';
+        pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 3';
+        pImg.style.gridColumn = '2 / 1';
         pImg.style.gridRow = '2 / 3';
         pImg.style.justifySelf = 'start';
         pImg.style.alignSelf = 'center';
@@ -334,34 +333,8 @@ function renderResponses(container, rows) {
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
-    // If the drink preference question exists, parse the response into a list and show it
-    if (drinkKey) {
-      const rawDrink = String(row[drinkKey] || '').trim();
-      if (rawDrink) {
-        const items = rawDrink
-          .split(/\s*(?:,|;|\/|\||&|\band\b|\n)\s*/i)
-          .map(s => s.trim())
-          .filter(Boolean);
-        if (items.length) {
-          const listEl = document.createElement('ul');
-          listEl.style.margin = '6px 0';
-          listEl.style.paddingLeft = '18px';
-          listEl.style.gridColumn = '1 / -1';
-          listEl.style.listStyle = 'disc';
-          items.forEach(it => {
-            const li = document.createElement('li');
-            li.textContent = it;
-            li.style.fontSize = '13px';
-            li.style.marginBottom = '4px';
-            listEl.appendChild(li);
-          });
-          details.appendChild(listEl);
-        }
-      }
-    }
-
     // omit timestamp, frequency question, study question, time length question, and preferred-time question from visible fields
-    // Replace long "How much work..." question label with "productivity:" and map answers to
+    // Replace long "How much work..." question label with "productivity:" and map answers to percentages
     const productivityRe = /how much work do you normally get done/i;
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
