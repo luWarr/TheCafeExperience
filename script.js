@@ -216,7 +216,7 @@ function renderResponses(container, rows) {
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
       const ans = raw.toLowerCase();
-      if (ans === 'yes' || ans.startsWith('y')) bg = '#FFC12B';
+      if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
       else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
       else if (ans.includes('depend')) bg = '#F5A4A3';
       if (i < 3) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
@@ -227,7 +227,7 @@ function renderResponses(container, rows) {
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0';
-    title.style.fontSize = '28px';
+    title.style.fontSize = '48px';
     title.style.color = '#252422';
     title.textContent = num;
     title.style.gridColumn = '1 / 2';   // first column only
