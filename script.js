@@ -221,8 +221,8 @@ function renderResponses(container, rows) {
     // 5 rows x 2 columns grid inside the card
     card.style.display = 'grid';
     card.style.gridTemplateColumns = '1fr 1fr';
-    card.style.gridTemplateRows = 'auto 50px 1fr 1fr 1fr';
-    card.style.gap = '8px';
+    card.style.gridTemplateRows = 'auto 40px 1fr 1fr 1fr';
+    // card.style.gap = '8px';
 
     // background color based on frequency answer
     let bg = '#ffffff';
@@ -240,7 +240,7 @@ function renderResponses(container, rows) {
     const num = String(i + 1).padStart(2, '0');
     const title = document.createElement('h4');
     title.style.margin = '0';
-    title.style.fontSize = '48px';
+    title.style.fontSize = '65px';
     title.style.color = '#252422';
     title.textContent = num;
     title.style.gridColumn = '1 / 2';
@@ -359,7 +359,7 @@ function renderResponses(container, rows) {
       valEl.style.whiteSpace = 'pre-wrap';
       // map long-form productivity responses to percentages
       let displayVal = val;
-      if (keyText === 'productivity:') {
+      if (keyText === 'Productivity:') {
         const norm = (val || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
         if (norm === 'lotsofwork') displayVal = '100%';
         else if (norm === 'adecentamount') displayVal = '75%';
