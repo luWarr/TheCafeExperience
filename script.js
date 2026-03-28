@@ -216,7 +216,7 @@ function renderResponses(container, rows) {
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
       const ans = raw.toLowerCase();
-      if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
+      if (ans === 'yes' || ans.startsWith('y')) bg = '#FFC12B';
       else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
       else if (ans.includes('depend')) bg = '#F5A4A3';
       if (i < 3) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
