@@ -221,7 +221,7 @@ function renderResponses(container, rows) {
     // 5 rows x 2 columns grid inside the card
     card.style.display = 'grid';
     card.style.gridTemplateColumns = '1fr 1fr';
-    card.style.gridTemplateRows = 'auto 120px 1fr 1fr 1fr';
+    card.style.gridTemplateRows = 'auto 50px 1fr 1fr 1fr';
     card.style.gap = '8px';
 
     // background color based on frequency answer
