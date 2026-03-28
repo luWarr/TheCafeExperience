@@ -328,6 +328,8 @@ function renderResponses(container, rows) {
     card.appendChild(details);
 
     // omit timestamp, frequency question, study question, time length question, and preferred-time question from visible fields
+    // Replace long "How much work..." question label with "productivity:" and map answers to percentages
+    const productivityRe = /how much work do you normally get done/i;
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
       if (targetKey && h === targetKey) return;
@@ -336,6 +338,18 @@ function renderResponses(container, rows) {
       if (timePrefKey && h === timePrefKey) return;
       const val = row[h];
       if (val === undefined || val === '') return;
+
+      const keyText = productivityRe.test(h) ? 'productivity:' : h;
+
+      // map productivity responses to percentages
+      let displayVal = String(val);
+      if (productivityRe.test(h)) {
+        const low = displayVal.toLowerCase();
+        if (low.includes('lots')) displayVal = '100%';
+        else if (low.includes('decent')) displayVal = '75%';
+        else if (low.includes('got some') || low.includes('not a lot')) displayVal = '25%';
+        else if (low.includes('barely')) displayVal = '5%';
+      }
 
       // display each field as two-column row inside details
       const line = document.createElement('div');
@@ -347,13 +361,13 @@ function renderResponses(container, rows) {
       const keyEl = document.createElement('div');
       keyEl.style.fontWeight = '600';
       keyEl.style.fontSize = '13px';
-      keyEl.textContent = h;
+      keyEl.textContent = keyText;
 
       const valEl = document.createElement('div');
       valEl.style.fontWeight = '400';
       valEl.style.opacity = '0.95';
       valEl.style.whiteSpace = 'pre-wrap';
-      valEl.textContent = val;
+      valEl.textContent = displayVal;
 
       line.appendChild(keyEl);
       line.appendChild(valEl);
