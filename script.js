@@ -294,7 +294,8 @@ function renderResponses(container, rows) {
       let prefImg = null;
       if (rawPref.includes('morn')) prefImg = 'images/morning.png';
       else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
-      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
+        else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
 
       if (prefImg) {
         const pImg = document.createElement('img');
