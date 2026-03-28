@@ -201,7 +201,13 @@ function renderResponses(container, rows) {
            /mornings|afternoons|nights|morning|afternoon|night/i.test(low);
   }) || null;
 
-  console.log('Detected keys -> freq:', targetKey, 'study:', studyKey, 'timeLen:', timeKey, 'timePref:', timePrefKey);
+  // detect drink preference question to hide it from the cards
+  const drinkKey = headers.find(h => {
+    const low = (h || '').toLowerCase();
+    return /when ordering drinks|what kind of drink|drink do you buy|type of drink/i.test(low);
+  }) || null;
+
+  console.log('Detected keys -> freq:', targetKey, 'study:', studyKey, 'timeLen:', timeKey, 'timePref:', timePrefKey, 'drinkKey:', drinkKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
@@ -327,8 +333,34 @@ function renderResponses(container, rows) {
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
+    // If the drink preference question exists, parse the response into a list and show it
+    if (drinkKey) {
+      const rawDrink = String(row[drinkKey] || '').trim();
+      if (rawDrink) {
+        const items = rawDrink
+          .split(/\s*(?:,|;|\/|\||&|\band\b|\n)\s*/i)
+          .map(s => s.trim())
+          .filter(Boolean);
+        if (items.length) {
+          const listEl = document.createElement('ul');
+          listEl.style.margin = '6px 0';
+          listEl.style.paddingLeft = '18px';
+          listEl.style.gridColumn = '1 / -1';
+          listEl.style.listStyle = 'disc';
+          items.forEach(it => {
+            const li = document.createElement('li');
+            li.textContent = it;
+            li.style.fontSize = '13px';
+            li.style.marginBottom = '4px';
+            listEl.appendChild(li);
+          });
+          details.appendChild(listEl);
+        }
+      }
+    }
+
     // omit timestamp, frequency question, study question, time length question, and preferred-time question from visible fields
-    // Replace long "How much work..." question label with "productivity:" and map answers to percentages
+    // Replace long "How much work..." question label with "productivity:" and map answers to
     const productivityRe = /how much work do you normally get done/i;
     headers.forEach(h => {
       if (tsKey && h === tsKey) return;
@@ -336,6 +368,7 @@ function renderResponses(container, rows) {
       if (studyKey && h === studyKey) return;
       if (timeKey && h === timeKey) return;
       if (timePrefKey && h === timePrefKey) return;
+      if (drinkKey && h === drinkKey) return; // hide the drink preference question
       const val = row[h];
       if (val === undefined || val === '') return;
 
@@ -376,82 +409,27 @@ function renderResponses(container, rows) {
 
     list.appendChild(card);
   });
-
   container.appendChild(list);
 }
 
-/* main render */
-function render(rows) {
-  let container = document.getElementById('viz-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'viz-container';
-    container.style.padding = '20px';
-    container.style.maxWidth = '1400px';
-    container.style.margin = '18px auto';
-    container.style.borderTop = '1px solid #eee';
-    document.body.appendChild(container);
-  } else {
-    container.innerHTML = '';
-  }
-
-  if (!rows.length) {
-    const msg = document.createElement('p');
-    msg.textContent = 'No data available.';
-    container.appendChild(msg);
-    return;
-  }
-
-  // show response cards
-  renderResponses(container, rows);
-
-  const numeric = detectNumericColumns(rows);
-  if (numeric.length) {
-    const chartTitle = document.createElement('h3');
-    chartTitle.textContent = 'Simple chart';
-    chartTitle.style.marginTop = '12px';
-    container.appendChild(chartTitle);
-    renderBarChart(container, rows, numeric[0]);
-  } else {
-    const note = document.createElement('p');
-    note.textContent = 'No numeric column detected for charting. Inspect cards for values.';
-    container.appendChild(note);
-  }
-
-  const reload = document.createElement('button');
-  reload.textContent = 'Reload data';
-  reload.style.marginTop = '12px';
-  reload.onclick = loadAndRender;
-  container.appendChild(reload);
-}
-
-/* fetch and render */
-async function loadAndRender() {
-  let container = document.getElementById('viz-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'viz-container';
-    container.style.padding = '20px';
-    container.style.maxWidth = '1400px';
-    container.style.margin = '18px auto';
-    document.body.appendChild(container);
-  }
-  container.innerHTML = '<p>Loading live responses…</p>';
-
-  try {
-    console.log('Requesting', CSV_URL);
-    const res = await fetch(CSV_URL);
-    if (!res.ok) {
-      const body = await res.text().catch(() => '<no body>');
-      throw new Error(`${res.status} ${res.statusText} — ${body}`);
-    }
-    const text = await res.text();
+// main entry point: fetch CSV, parse, render table + chart + cards
+fetch(CSV_URL)
+  .then(res => res.text())
+  .then(text => {
     const rows = parseCSV(text);
-    render(rows);
-  } catch (err) {
-    container.innerHTML = `<p>Error loading data: ${err.message}</p>`;
-    console.error('CSV fetch error', err, 'URL:', CSV_URL);
-  }
-}
+    console.log('Parsed CSV rows:', rows);
+    const numeric = detectNumericColumns(rows);
+    console.log('Detected numeric columns:', numeric);
 
-document.addEventListener('DOMContentLoaded', loadAndRender);
+    const container = document.getElementById('tableContainer');
+    renderTable(container, rows);
+
+    if (numeric.length > 0) {
+      const chartContainer = document.getElementById('chartContainer');
+      renderBarChart(chartContainer, rows, numeric[0]);
+    }
+
+    const responsesContainer = document.getElementById('responsesContainer');
+    renderResponses(responsesContainer, rows);
+  })
+  .catch(err => console.error('Error fetching or parsing CSV:', err));
