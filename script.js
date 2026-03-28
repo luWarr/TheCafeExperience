@@ -293,10 +293,10 @@ function renderResponses(container, rows) {
       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
       let prefImg = null;
       if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
-      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
-      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
 
-
+//Images for preffered time of day
       if (prefImg) {
         const pImg = document.createElement('img');
         pImg.src = prefImg;
@@ -307,9 +307,9 @@ function renderResponses(container, rows) {
         pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 3';
+        pImg.style.gridColumn = '2 / 1';
         pImg.style.gridRow = '2 / 3';
-        pImg.style.justifySelf = 'center';
+        pImg.style.justifySelf = 'start';
         pImg.style.alignSelf = 'center';
         card.appendChild(pImg);
       }
