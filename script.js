@@ -355,7 +355,7 @@ function renderResponses(container, rows) {
       valEl.style.whiteSpace = 'pre-wrap';
       // map long-form productivity responses to percentages
       let displayVal = val;
-      if (keyText === 'productivity:') {
+      if (keyText === 'Productivity:') {
         const norm = (val || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
         if (norm === 'lotsofwork') displayVal = '100%';
         else if (norm === 'adecentamount') displayVal = '75%';
