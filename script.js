@@ -347,13 +347,26 @@ function renderResponses(container, rows) {
       const keyEl = document.createElement('div');
       keyEl.style.fontWeight = '600';
       keyEl.style.fontSize = '13px';
-      keyEl.textContent = h;
+      // replace the long question with the shorter label "productivity:"
+      const keyText = /how much work do you normally get done in cafe'?s\?/i.test(h)
+        ? 'productivity:'
+        : h;
+      keyEl.textContent = keyText;
 
       const valEl = document.createElement('div');
       valEl.style.fontWeight = '400';
       valEl.style.opacity = '0.95';
       valEl.style.whiteSpace = 'pre-wrap';
-      valEl.textContent = val;
+      // map long-form productivity responses to percentages
+      let displayVal = val;
+      if (keyText === 'productivity:') {
+        const norm = (val || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (norm === 'lotsofwork') displayVal = '100%';
+        else if (norm === 'adecentamount') displayVal = '75%';
+        else if (norm === 'gotsomestuffdonebutnotalot') displayVal = '25%';
+        else if (norm === 'ibarelytouchmywork') displayVal = '5%';
+      }
+      valEl.textContent = displayVal;
 
       line.appendChild(keyEl);
       line.appendChild(valEl);
