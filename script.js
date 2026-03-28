@@ -158,6 +158,8 @@ function renderBarChart(container, rows, numericKey) {
 
 /* ---------- NEW: render each response as a card (fixed & completed) ---------- */
 function renderResponses(container, rows) {
+  // if caller didn't pass a container, fall back to body so we don't throw
+  if (!container) container = document.body;
   const list = document.createElement('div');
   list.style.display = 'grid';
   list.style.gridTemplateColumns = 'repeat(5, 270px)';
@@ -310,10 +312,9 @@ function renderResponses(container, rows) {
         // fixed size 40x40 and centered within the grid cell
         pImg.style.width = '40px';
         pImg.style.height = '40px';
-        pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 1';
+        pImg.style.gridColumn = '2 / 3';
         pImg.style.gridRow = '2 / 3';
         pImg.style.justifySelf = 'start';
         pImg.style.alignSelf = 'center';
