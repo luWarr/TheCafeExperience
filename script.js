@@ -264,9 +264,9 @@ function renderResponses(container, rows) {
         timeEl.textContent = timeVal;
         timeEl.style.gridColumn = '1 / 2';
         timeEl.style.gridRow = '2 / 3';
-        timeEl.style.alignSelf = 'end';
-        timeEl.style.justifySelf = 'center';
-        timeEl.style.fontSize = '20px';
+        timeEl.style.alignSelf = 'center';
+        timeEl.style.justifySelf = 'end';
+        timeEl.style.fontSize = '15px';
         timeEl.style.fontWeight = '600';
         timeEl.style.padding = '4px 6px';
         timeEl.style.background = 'transparent';
@@ -413,7 +413,7 @@ function renderResponses(container, rows) {
       const img = document.createElement('img');
       img.src = barcodeSrc;
       img.alt = 'barcode';
-      img.style.width = '60px';
+      img.style.width = '243px';
       img.style.height = 'auto';
       img.style.objectFit = 'contain';
       // place in final grid row
