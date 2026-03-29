@@ -317,8 +317,7 @@ function renderResponses(container, rows) {
          pImg.style.height = '40px';
          pImg.style.objectFit = 'contain';
          pImg.style.margin = '0';
--        pImg.style.gridColumn = '2 / 1';
-+        pImg.style.gridColumn = '3 / 4';
+         pImg.style.gridColumn = '3 / 4';
          pImg.style.gridRow = '2 / 3';
          pImg.style.justifySelf = 'center';
          pImg.style.alignSelf = 'center';
