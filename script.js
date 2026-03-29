@@ -158,6 +158,16 @@ function renderBarChart(container, rows, numericKey) {
 
 /* ---------- NEW: render each response as a card (fixed & completed) ---------- */
 function renderResponses(container, rows) {
+  // ensure we have a container to append into
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'responsesContainer';
+    container.style.padding = '12px';
+    container.style.maxWidth = '1400px';
+    container.style.margin = '8px auto';
+    document.body.appendChild(container);
+  }
+
   const list = document.createElement('div');
   list.style.display = 'grid';
   list.style.gridTemplateColumns = 'repeat(5, 270px)';
@@ -169,7 +179,7 @@ function renderResponses(container, rows) {
   const headers = Object.keys(rows[0] || {});
   const tsKey = headers.find(h => /timestamp/i.test(h));
 
-  // robust frequency header detection
+  // robust key detectors (unchanged)
   const findHeaderByKeywords = (keys) => {
     return headers.find(h => {
       const low = (h || '').toLowerCase();
@@ -182,32 +192,26 @@ function renderResponses(container, rows) {
                     headers.find(h => /do you (go|visit).*cafe/i.test(h)) ||
                     null;
 
-  // detect study-mode header (work alone / work with friends / both)
   const studyKey = headers.find(h => {
     const low = (h || '').toLowerCase();
     return (low.includes('work') || low.includes('study') || low.includes('alone') || low.includes('friend') || low.includes('both'));
   }) || null;
 
-  // detect time-on-cafe header (how long)
   const timeKey = headers.find(h => {
     const low = (h || '').toLowerCase();
     return /how long|normally work|regular day|work in a cafe|how many hours/.test(low);
   }) || null;
 
-  // detect preferred time-of-day header (the question to remove and replace with image)
   const timePrefKey = headers.find(h => {
     const low = (h || '').toLowerCase();
     return /specific time of day|time of day|prefer studying|prefer.*studying|time.*prefer/i.test(low) ||
            /mornings|afternoons|nights|morning|afternoon|night/i.test(low);
   }) || null;
 
-  // detect drink preference question to hide it from the cards
   const drinkKey = headers.find(h => {
     const low = (h || '').toLowerCase();
     return /when ordering drinks|what kind of drink|drink do you buy|type of drink/i.test(low);
   }) || null;
-
-  console.log('Detected keys -> freq:', targetKey, 'study:', studyKey, 'timeLen:', timeKey, 'timePref:', timePrefKey, 'drinkKey:', drinkKey);
 
   rows.forEach((row, i) => {
     const card = document.createElement('article');
@@ -228,9 +232,9 @@ function renderResponses(container, rows) {
     card.style.display = 'grid';
     card.style.gridTemplateColumns = '1fr 1fr';
     card.style.gridTemplateRows = 'auto 50px 1fr 1fr 1fr';
-    // card.style.gap = '8px';
+    card.style.gap = '8px';
 
-    // background color based on frequency answer
+    // background colour mapping (unchanged)
     let bg = '#ffffff';
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
@@ -238,7 +242,6 @@ function renderResponses(container, rows) {
       if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
       else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
       else if (ans.includes('depend')) bg = '#F5A4A3';
-      if (i < 3) console.log(`row ${i+1} "${targetKey}" =>`, raw, 'mapped bg', bg);
     }
     card.style.background = bg;
 
@@ -272,7 +275,7 @@ function renderResponses(container, rows) {
       }
     }
 
-    // study-mode image in first row, second column (unchanged)
+    // study-mode image in first row, second column
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
       let imgSrc = null;
@@ -294,7 +297,7 @@ function renderResponses(container, rows) {
       }
     }
 
-    // preferred time-of-day: replace text with image in row 2 column 2, omit the question text from details
+    // preferred time-of-day image in row 2 column 2
     if (timePrefKey) {
       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
       let prefImg = null;
@@ -302,7 +305,6 @@ function renderResponses(container, rows) {
       else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
       else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
 
-//Images for preffered time of day
       if (prefImg) {
         const pImg = document.createElement('img');
         pImg.src = prefImg;
@@ -310,12 +312,11 @@ function renderResponses(container, rows) {
         // fixed size 40x40 and centered within the grid cell
         pImg.style.width = '40px';
         pImg.style.height = '40px';
-        pImg.style.strokeWidth= '10px';
         pImg.style.objectFit = 'contain';
         pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 1';
+        pImg.style.gridColumn = '2 / 3';
         pImg.style.gridRow = '2 / 3';
-        pImg.style.justifySelf = 'start';
+        pImg.style.justifySelf = 'center';
         pImg.style.alignSelf = 'center';
         card.appendChild(pImg);
       }
@@ -333,7 +334,32 @@ function renderResponses(container, rows) {
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
-    // omit timestamp, frequency question, study question, time length question, and preferred-time question from visible fields
+    // if the drink question exists, render response as list (top of details)
+    if (drinkKey) {
+      const rawDrink = String(row[drinkKey] || '').trim();
+      if (rawDrink) {
+        const items = rawDrink
+          .split(/\s*(?:,|;|\/|\||&|\band\b|\n)\s*/i)
+          .map(s => s.trim())
+          .filter(Boolean);
+        if (items.length) {
+          const listEl = document.createElement('ul');
+          listEl.style.margin = '6px 0';
+          listEl.style.paddingLeft = '18px';
+          listEl.style.gridColumn = '1 / -1';
+          listEl.style.listStyle = 'disc';
+          items.forEach(it => {
+            const li = document.createElement('li');
+            li.textContent = it;
+            li.style.fontSize = '13px';
+            li.style.marginBottom = '4px';
+            listEl.appendChild(li);
+          });
+          details.appendChild(listEl);
+        }
+      }
+    }
+
     // Replace long "How much work..." question label with "productivity:" and map answers to percentages
     const productivityRe = /how much work do you normally get done/i;
     headers.forEach(h => {
@@ -383,6 +409,7 @@ function renderResponses(container, rows) {
 
     list.appendChild(card);
   });
+
   container.appendChild(list);
 }
 
@@ -395,15 +422,31 @@ fetch(CSV_URL)
     const numeric = detectNumericColumns(rows);
     console.log('Detected numeric columns:', numeric);
 
-    const container = document.getElementById('tableContainer');
+    // ensure containers exist before rendering
+    let container = document.getElementById('tableContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'tableContainer';
+      document.body.appendChild(container);
+    }
     renderTable(container, rows);
 
     if (numeric.length > 0) {
-      const chartContainer = document.getElementById('chartContainer');
+      let chartContainer = document.getElementById('chartContainer');
+      if (!chartContainer) {
+        chartContainer = document.createElement('div');
+        chartContainer.id = 'chartContainer';
+        document.body.appendChild(chartContainer);
+      }
       renderBarChart(chartContainer, rows, numeric[0]);
     }
 
-    const responsesContainer = document.getElementById('responsesContainer');
+    let responsesContainer = document.getElementById('responsesContainer');
+    if (!responsesContainer) {
+      responsesContainer = document.createElement('div');
+      responsesContainer.id = 'responsesContainer';
+      document.body.appendChild(responsesContainer);
+    }
     renderResponses(responsesContainer, rows);
   })
   .catch(err => console.error('Error fetching or parsing CSV:', err));
