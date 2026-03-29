@@ -422,15 +422,7 @@ fetch(CSV_URL)
     const numeric = detectNumericColumns(rows);
     console.log('Detected numeric columns:', numeric);
 
-    // removed table rendering so only charts/cards are shown
-    // ensure containers exist before rendering
-    let container = document.getElementById('tableContainer');
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'tableContainer';
-      document.body.appendChild(container);
-    }
-    renderTable(container, rows);
+    // do not render the raw table — only render charts and cards
 
     if (numeric.length > 0) {
       let chartContainer = document.getElementById('chartContainer');
