@@ -264,7 +264,7 @@ function renderResponses(container, rows) {
         timeEl.textContent = timeVal;
         timeEl.style.gridColumn = '1 / 2';
         timeEl.style.gridRow = '2 / 3';
-        timeEl.style.alignSelf = 'center';
+        timeEl.style.alignSelf = 'end';
         timeEl.style.justifySelf = 'center';
         timeEl.style.fontSize = '20px';
         timeEl.style.fontWeight = '600';
@@ -406,6 +406,24 @@ function renderResponses(container, rows) {
       line.appendChild(valEl);
       details.appendChild(line);
     });
+
+    // place barcode image on the last row (row 5) of the card grid
+    (function addBarcode() {
+      const barcodeSrc = 'images/barcodeass.png';
+      const img = document.createElement('img');
+      img.src = barcodeSrc;
+      img.alt = 'barcode';
+      img.style.width = '60px';
+      img.style.height = 'auto';
+      img.style.objectFit = 'contain';
+      // place in final grid row
+      img.style.gridColumn = '1 / -1';
+      img.style.gridRow = '5 / 6';
+      img.style.justifySelf = 'center';
+      img.style.alignSelf = 'center';
+      img.style.marginTop = '6px';
+      card.appendChild(img);
+    })();
 
     list.appendChild(card);
   });
