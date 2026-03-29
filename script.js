@@ -213,9 +213,6 @@ function renderResponses(container, rows) {
     return /when ordering drinks|what kind of drink|drink do you buy|type of drink/i.test(low);
   }) || null;
 
-  // detect productivity question header (so we can place it in the grid)
-  const productivityKey = headers.find(h => /how much work do you normally get done/i.test((h || '').toLowerCase())) || null;
-
   rows.forEach((row, i) => {
     const card = document.createElement('article');
 
@@ -231,9 +228,9 @@ function renderResponses(container, rows) {
     card.style.fontSize = '14px';
     card.style.overflow = 'hidden';
 
-    // 5 rows x 3 columns grid inside the card (changed to 3 columns)
+    // 5 rows x 2 columns grid inside the card
     card.style.display = 'grid';
-    card.style.gridTemplateColumns = '1fr 1fr 1fr';
+    card.style.gridTemplateColumns = '1fr 1fr';
     card.style.gridTemplateRows = 'auto 50px 1fr 1fr 1fr';
     card.style.gap = '8px';
 
@@ -300,61 +297,29 @@ function renderResponses(container, rows) {
       }
     }
 
-    // preferred time-of-day image in row 2 column 3
-     if (timePrefKey) {
-       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
-       let prefImg = null;
-       if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
-       else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
-       else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
- 
-       if (prefImg) {
-         const pImg = document.createElement('img');
-         pImg.src = prefImg;
-         pImg.alt = rawPref || 'preferred time';
-         // fixed size 40x40 and centered within the grid cell
-         pImg.style.width = '40px';
-         pImg.style.height = '40px';
-         pImg.style.objectFit = 'contain';
-         pImg.style.margin = '0';
-         pImg.style.gridColumn = '3 / 4';
-         pImg.style.gridRow = '2 / 3';
-         pImg.style.justifySelf = 'center';
-         pImg.style.alignSelf = 'center';
-         card.appendChild(pImg);
-       }
-     }
+    // preferred time-of-day image in row 2 column 2
+    if (timePrefKey) {
+      const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
+      let prefImg = null;
+      if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
 
-    // place productivity label/value in row 4: label in col 3, value in col 2
-    if (productivityKey) {
-      const rawProd = String(row[productivityKey] || '').trim();
-      // map productivity responses to percentages
-      let prodDisplay = rawProd;
-      const lp = rawProd.toLowerCase();
-      if (lp.includes('lots')) prodDisplay = '100%';
-      else if (lp.includes('decent')) prodDisplay = '75%';
-      else if (lp.includes('got some') || lp.includes('not a lot')) prodDisplay = '25%';
-      else if (lp.includes('barely')) prodDisplay = '5%';
-
-      const prodLabel = document.createElement('div');
-      prodLabel.textContent = 'productvitivy';
-      prodLabel.style.fontWeight = '600';
-      prodLabel.style.fontSize = '13px';
-      prodLabel.style.gridColumn = '3 / 4';
-      prodLabel.style.gridRow = '4 / 5';
-      prodLabel.style.alignSelf = 'center';
-      prodLabel.style.justifySelf = 'start';
-      card.appendChild(prodLabel);
-
-      const prodValEl = document.createElement('div');
-      prodValEl.textContent = prodDisplay;
-      prodValEl.style.fontWeight = '600';
-      prodValEl.style.fontSize = '13px';
-      prodValEl.style.gridColumn = '2 / 3';
-      prodValEl.style.gridRow = '4 / 5';
-      prodValEl.style.alignSelf = 'center';
-      prodValEl.style.justifySelf = 'center';
-      card.appendChild(prodValEl);
+      if (prefImg) {
+        const pImg = document.createElement('img');
+        pImg.src = prefImg;
+        pImg.alt = rawPref || 'preferred time';
+        // fixed size 40x40 and centered within the grid cell
+        pImg.style.width = '40px';
+        pImg.style.height = '40px';
+        pImg.style.objectFit = 'contain';
+        pImg.style.margin = '0';
+        pImg.style.gridColumn = '2 / 1';
+        pImg.style.gridRow = '2 / 3';
+        pImg.style.justifySelf = 'start';
+        pImg.style.alignSelf = 'center';
+        card.appendChild(pImg);
+      }
     }
 
     // details container occupies rows 3-5 and spans both columns
@@ -404,7 +369,6 @@ function renderResponses(container, rows) {
       if (timeKey && h === timeKey) return;
       if (timePrefKey && h === timePrefKey) return;
       if (drinkKey && h === drinkKey) return; // hide the drink preference question
-      if (productivityKey && h === productivityKey) return; // already rendered in grid
       const val = row[h];
       if (val === undefined || val === '') return;
 
