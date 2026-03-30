@@ -1,6 +1,23 @@
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRK1dytJ7DNbo6JN0bPRRIGTa1WT25SXnoFgRttur1y7W_0NFBu7kO11i39Q8hmY5tDTq5V78Mjg8RP/pub?output=csv';
 console.log('Fetching CSV from:', CSV_URL);
 
+// ensure Google form links don't show as purple when visited
+(function normalizeLinkColors() {
+  const s = document.createElement('style');
+  s.textContent = `
+    /* make visited Google/Docs links use the same color as unvisited links */
+    a[href*="docs.google.com"] ,
+    a[href*="docs.google.com"] :link,
+    a[href*="docs.google.com"] :visited {
+      color: inherit !important;
+      text-decoration: underline !important;
+    }
+    /* fallback: all visited links same as unvisited */
+    a:visited { color: inherit !important; }
+  `;
+  document.head.appendChild(s);
+})();
+
 /* Robust CSV splitter that handles quoted fields */
 function splitCSVRow(row) {
   const result = [];
@@ -143,7 +160,7 @@ function renderBarChart(container, rows, numericKey) {
     const x = padding + i * (chartW / data.length) + ((chartW / data.length) - barW) / 2;
     const h = (v / max) * (chartH - 20);
     const y = padding + chartH - h;
-    ctx.fillStyle = '#4A7856';
+    ctx.fillStyle = '#FFC12B';
     ctx.fillRect(x, y, barW, h);
     ctx.fillStyle = '#222';
     ctx.font = '11px sans-serif';
