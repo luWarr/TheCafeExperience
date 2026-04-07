@@ -260,7 +260,14 @@ function renderResponses(container, rows) {
       else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
       else if (ans.includes('depend')) bg = '#F5A4A3';
     }
-    card.style.background = bg;
+    // use BETTERRECIPT.png as the card background, keep color as fallback
+    card.style.backgroundImage = "url('images/BETTERRECIPT.png')";
+    card.style.backgroundSize = 'cover';
+    card.style.backgroundRepeat = 'no-repeat';
+    card.style.backgroundPosition = 'center';
+    card.style.backgroundColor = bg;
+    // ensure content renders above the background image
+    card.style.position = 'relative';
 
     // numeric title placed in first row, first column
     const num = String(i + 1).padStart(2, '0');
