@@ -18,6 +18,14 @@ console.log('Fetching CSV from:', CSV_URL);
   document.head.appendChild(s);
 })();
 
+// set page background to images/pimping.jpeg
+document.body.style.backgroundImage = "url('images/pimping.jpeg')";
+document.body.style.backgroundSize = 'cover';
+document.body.style.backgroundRepeat = 'no-repeat';
+document.body.style.backgroundPosition = 'center';
+document.body.style.backgroundAttachment = 'fixed';
+document.body.style.backgroundColor = '#000'; // fallback color
+
 /* Robust CSV splitter that handles quoted fields */
 function splitCSVRow(row) {
   const result = [];
