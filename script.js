@@ -237,8 +237,8 @@ function renderResponses(container, rows) {
     card.style.width = '270px';
     card.style.height = '420px';
     card.style.boxSizing = 'border-box';
-    card.style.border = '1px solid #e8e8e8';
-    card.style.borderRadius = '8px';
+    card.style.border = 'none';
+    card.style.borderRadius = '0';
     card.style.padding = '12px';
     card.style.margin = '5px';
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
