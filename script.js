@@ -19,7 +19,7 @@ console.log('Fetching CSV from:', CSV_URL);
 })();
 
 // set page background to images/pimping.jpeg
-document.body.style.backgroundImage = "url('images/pimping.jpeg')";
+document.body.style.backgroundImage = "url('images/wood.jpeg')";
 document.body.style.backgroundSize = 'cover';
 document.body.style.backgroundRepeat = 'no-repeat';
 document.body.style.backgroundPosition = 'center';
@@ -260,7 +260,7 @@ function renderResponses(container, rows) {
     // card.style.gap = '8px';
 
     // background colour mapping (unchanged) BACKUP COLOURS JUST IN CASE
-    let bg = '#ffffff';
+    // let bg = '#ffffff';
     // if (targetKey) {
     //   const raw = String(row[targetKey] || '').trim();
     //   const ans = raw.toLowerCase();
