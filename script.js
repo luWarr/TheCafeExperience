@@ -251,7 +251,7 @@ function renderResponses(container, rows) {
     card.style.gridTemplateRows = 'auto 40px 1fr 1fr 1fr';
     // card.style.gap = '8px';
 
-    // background colour mapping (unchanged)
+    // background colour mapping (unchanged) BACKUP COLOURS JUST IN CASE
     let bg = '#ffffff';
     // if (targetKey) {
     //   const raw = String(row[targetKey] || '').trim();
