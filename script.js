@@ -259,15 +259,15 @@ function renderResponses(container, rows) {
     card.style.gridTemplateRows = 'auto 40px 1fr 1fr 1fr';
     // card.style.gap = '8px';
 
-    // background colour mapping (unchanged) BACKUP COLOURS JUST IN CASE
-    // let bg = '#ffffff';
-    // if (targetKey) {
-    //   const raw = String(row[targetKey] || '').trim();
-    //   const ans = raw.toLowerCase();
-    //   if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
-    //   else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
-    //   else if (ans.includes('depend')) bg = '#F5A4A3';
-    // }
+    // background colour mapping (fallback colour used if no image)
+    let bg = '#ffffff';
+    if (targetKey) {
+      const raw = String(row[targetKey] || '').trim();
+      const ans = raw.toLowerCase();
+      if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
+      else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
+      else if (ans.includes('depend')) bg = '#F5A4A3';
+    }
     // use BETTERRECIPT.png as the card background, keep color as fallback
     card.style.backgroundImage = "url('images/BETTERRECIPT.png')";
     card.style.backgroundSize = 'cover';
