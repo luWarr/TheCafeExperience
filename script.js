@@ -278,11 +278,11 @@ function renderResponses(container, rows) {
       const raw = String(row[targetKey] || '').trim();
       const ans = raw.toLowerCase();
       if (ans === 'yes' || ans.startsWith('y')) {
-        bgImg = 'images/DYOYes.png';
+        bgImg = 'images/DYOYesV2.png';
       } else if (ans === 'no' || ans.startsWith('n')) {
-        bgImg = 'images/DYONo.png';
+        bgImg = 'images/DYONoV2.png';
       } else if (ans.includes('depend')) {
-        bgImg = 'images/DYODepends.png';
+        bgImg = 'images/DYODependsV2.png';
       }
     }
     // use mapped image as the card background (no color fallback)
