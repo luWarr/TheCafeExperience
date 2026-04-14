@@ -396,7 +396,10 @@ function renderResponses(container, rows) {
           listEl.style.paddingLeft = '0';     // remove default left padding
           listEl.style.gridColumn = '1 / -1';
           listEl.style.listStyle = 'none';   // remove bullets
-          items.forEach(it => {
+
+          // show only first three answers
+          const shown = items.slice(0, 3);
+          shown.forEach(it => {
             const li = document.createElement('li');
             li.textContent = it;
             li.style.fontSize = '15px';
@@ -404,6 +407,17 @@ function renderResponses(container, rows) {
             li.style.paddingLeft = '0';
             listEl.appendChild(li);
           });
+
+          // indicate if there are more items
+          if (items.length > 3) {
+            const more = document.createElement('div');
+            more.textContent = `+${items.length - 3} more`;
+            more.style.fontSize = '12px';
+            more.style.opacity = '0.8';
+            more.style.marginTop = '4px';
+            listEl.appendChild(more);
+          }
+
           details.appendChild(listEl);
         }
       }
@@ -463,7 +477,7 @@ function renderResponses(container, rows) {
       img.src = barcodeSrc;
       img.alt = 'barcode';
       img.style.width = '243px';
-      img.style.height = '100px;';
+      img.style.height = 'auto';
       img.style.objectFit = 'contain';
       // place in final grid row
       img.style.gridColumn = '1 / -1';
