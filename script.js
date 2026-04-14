@@ -260,6 +260,7 @@ function renderResponses(container, rows) {
     card.style.border = 'none';
     card.style.borderRadius = '0';
     card.style.padding = '12px';
+    card.style.paddingTop = '25px';
     card.style.margin = '5px';
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
     card.style.fontSize = '14px';
