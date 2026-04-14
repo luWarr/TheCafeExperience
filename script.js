@@ -304,22 +304,26 @@ function renderResponses(container, rows) {
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
-    // place preferred-time text into column 1, row 1 and align bottom-left
+    // place preferred-time text into column 1, row 1 bottom-left (replaces text)
     if (timePrefKey) {
-      const prefText = String(row[timePrefKey] || '').trim();
-      if (prefText) {
-        const prefEl = document.createElement('div');
-        prefEl.textContent = prefText;
+      const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
+      let prefImg = null;
+      if (rawPref.includes('morn')) prefImg = 'images/morning.png';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
+
+      if (prefImg) {
+        const prefEl = document.createElement('img');
+        prefEl.src = prefImg;
+        prefEl.alt = rawPref || 'preferred time';
+        prefEl.style.width = '40px';
+        prefEl.style.height = '40px';
+        prefEl.style.objectFit = 'contain';
         prefEl.style.gridColumn = '1 / 2';
         prefEl.style.gridRow = '1 / 2';
         prefEl.style.alignSelf = 'end';     // bottom of the cell
         prefEl.style.justifySelf = 'start'; // left of the cell
-        prefEl.style.fontSize = '12px';
-        prefEl.style.fontWeight = '600';
-        prefEl.style.padding = '4px 6px';
-        prefEl.style.background = 'rgba(255,255,255,0.8)'; // keep readable over image
-        prefEl.style.borderRadius = '4px';
-        prefEl.style.margin = '6px 6px 6px 6px';
+        prefEl.style.margin = '6px';
         prefEl.style.pointerEvents = 'none';
         card.appendChild(prefEl);
       }
