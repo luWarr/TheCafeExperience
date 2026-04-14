@@ -18,13 +18,25 @@ console.log('Fetching CSV from:', CSV_URL);
   document.head.appendChild(s);
 })();
 
-// set page background to images/pimping.jpeg
-document.body.style.backgroundImage = "url('images/pimpingV3.png')";
-document.body.style.backgroundSize = 'cover';
-document.body.style.backgroundRepeat = 'no-repeat';
-document.body.style.backgroundPosition = 'center';
-document.body.style.backgroundAttachment = 'fixed';
-document.body.style.backgroundColor = '#000'; // fallback color
+// set page background to images/pimpingV3.png and make it cover the viewport
+(function setPageBackground() {
+  const css = `
+    html, body { height: 100%; margin: 0; }
+    body {
+      background-image: url("images/pimpingV3.png");
+      background-size: cover;       /* fill screen while preserving aspect ratio */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-color: #000;       /* fallback */
+    }
+    /* optional: keep main containers centered without extra body padding */
+    #responsesContainer, #chartContainer { margin: 0 auto; }
+  `;
+  const s = document.createElement('style');
+  s.textContent = css;
+  document.head.appendChild(s);
+})();
 
 /* Robust CSV splitter that handles quoted fields */
 function splitCSVRow(row) {
