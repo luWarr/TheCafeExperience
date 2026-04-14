@@ -273,21 +273,30 @@ function renderResponses(container, rows) {
 
     // background colour mapping (fallback colour used if no image)
     let bg = '#ffffff';
+    // default background image
+    let bgImg = 'images/BETTERRECIPT.png';
     if (targetKey) {
       const raw = String(row[targetKey] || '').trim();
       const ans = raw.toLowerCase();
-      if (ans === 'yes' || ans.startsWith('y')) bg = '#5293A3';
-      else if (ans === 'no' || ans.startsWith('n')) bg = '#EDEBD7';
-      else if (ans.includes('depend')) bg = '#F5A4A3';
+      if (ans === 'yes' || ans.startsWith('y')) {
+        bg = '#5293A3';
+        bgImg = 'images/DYOYes.png';
+      } else if (ans === 'no' || ans.startsWith('n')) {
+        bg = '#EDEBD7';
+        bgImg = 'images/DYONo.png';
+      } else if (ans.includes('depend')) {
+        bg = '#F5A4A3';
+        bgImg = 'images/DYODepends.png';
+      }
     }
-    // use BETTERRECIPT.png as the card background, keep color as fallback
-    card.style.backgroundImage = "url('images/BETTERRECIPT.png')";
-    card.style.backgroundSize = 'cover';
-    card.style.backgroundRepeat = 'no-repeat';
-    card.style.backgroundPosition = 'center';
-    card.style.backgroundColor = bg;
-    // ensure content renders above the background image
-    card.style.position = 'relative';
+    // use mapped image as the card background, keep color as fallback
+    card.style.backgroundImage = `url('${bgImg}')`;
+     card.style.backgroundSize = 'cover';
+     card.style.backgroundRepeat = 'no-repeat';
+     card.style.backgroundPosition = 'center';
+     card.style.backgroundColor = bg;
+     // ensure content renders above the background image
+     card.style.position = 'relative';
 
     // numeric title placed in first row, first column
     const num = String(i + 1).padStart(2, '0');
