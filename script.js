@@ -326,9 +326,9 @@ function renderResponses(container, rows) {
     if (studyKey) {
       const rawStudy = String(row[studyKey] || '').trim().toLowerCase();
       let imgSrc = null;
-      if (rawStudy.includes('alone')) imgSrc = 'images/workAlone.svg';
-      else if (rawStudy.includes('both')) imgSrc = 'images/both.svg';
-      else if (rawStudy.includes('friend') || rawStudy.includes('with')) imgSrc = 'images/workWithfriends.svg';
+      if (rawStudy.includes('alone')) imgSrc = 'images/workAloneV2.png';
+      else if (rawStudy.includes('both')) imgSrc = 'images/dependsV2.png';
+      else if (rawStudy.includes('friend') || rawStudy.includes('with')) imgSrc = 'images/workTogetherV2.png';
 
       if (imgSrc) {
         const img = document.createElement('img');
