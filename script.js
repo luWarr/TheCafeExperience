@@ -260,7 +260,7 @@ function renderResponses(container, rows) {
     card.style.border = 'none';
     card.style.borderRadius = '0';
     card.style.padding = '12px';
-    card.style.paddingTop = '40px';
+    card.style.paddingTop = '50px';
     card.style.margin = '5px';
     card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
     card.style.fontSize = '14px';
@@ -393,14 +393,15 @@ function renderResponses(container, rows) {
         if (items.length) {
           const listEl = document.createElement('ul');
           listEl.style.margin = '6px 0';
-          listEl.style.paddingLeft = '18px';
+          listEl.style.paddingLeft = '0';     // remove default left padding
           listEl.style.gridColumn = '1 / -1';
-          listEl.style.listStyle = 'disc';
+          listEl.style.listStyle = 'none';   // remove bullets
           items.forEach(it => {
             const li = document.createElement('li');
             li.textContent = it;
             li.style.fontSize = '15px';
             li.style.marginBottom = '4px';
+            li.style.paddingLeft = '0';
             listEl.appendChild(li);
           });
           details.appendChild(listEl);
