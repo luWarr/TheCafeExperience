@@ -331,7 +331,7 @@ function renderResponses(container, rows) {
 
     // row 2 divider spanning both columns
     const divider = document.createElement('div');
-    divider.textContent = '-----------------------------------------------------';
+    divider.textContent = '----------------------------------------------------';
     divider.style.gridColumn = '1 / -1';
     divider.style.gridRow = '2 / 3';
     divider.style.alignSelf = 'center';
