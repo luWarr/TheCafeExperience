@@ -392,8 +392,7 @@ function renderResponses(container, rows) {
     details.style.overflowY = 'auto';
     details.style.paddingRight = '6px';
     details.style.gridColumn = '1 / -1';
-    // keep details in row 3 only so row 4 remains empty
-    details.style.gridRow = '3 / 4';
+    details.style.gridRow = '3 / 6';
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
@@ -447,20 +446,11 @@ function renderResponses(container, rows) {
       if (timeKey && h === timeKey) return;
       if (timePrefKey && h === timePrefKey) return;
       if (drinkKey && h === drinkKey) return; // hide the drink preference question
+      if (productivityRe.test(h)) return; // skip productivity question and its response entirely
       const val = row[h];
       if (val === undefined || val === '') return;
 
-      const keyText = productivityRe.test(h) ? 'productivity:' : h;
-
-      // map productivity responses to percentages
-      let displayVal = String(val);
-      if (productivityRe.test(h)) {
-        const low = displayVal.toLowerCase();
-        if (low.includes('lots')) displayVal = '100%';
-        else if (low.includes('decent')) displayVal = '75%';
-        else if (low.includes('got some') || low.includes('not a lot')) displayVal = '25%';
-        else if (low.includes('barely')) displayVal = '5%';
-      }
+      const keyText = h;
 
       // display each field as two-column row inside details
       const line = document.createElement('div');
@@ -478,7 +468,7 @@ function renderResponses(container, rows) {
       valEl.style.fontWeight = '400';
       valEl.style.opacity = '0.95';
       valEl.style.whiteSpace = 'pre-wrap';
-      valEl.textContent = displayVal;
+      valEl.textContent = String(val);
 
       line.appendChild(keyEl);
       line.appendChild(valEl);
