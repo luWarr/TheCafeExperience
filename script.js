@@ -453,14 +453,14 @@ function renderResponses(container, rows) {
       const keyText = productivityRe.test(h) ? 'productivity:' : h;
 
       // map productivity responses to percentages
-      // let displayVal = String(val);
-      // if (productivityRe.test(h)) {
-      //   const low = displayVal.toLowerCase();
-      //   if (low.includes('lots')) displayVal = '100%';
-      //   else if (low.includes('decent')) displayVal = '75%';
-      //   else if (low.includes('got some') || low.includes('not a lot')) displayVal = '25%';
-      //   else if (low.includes('barely')) displayVal = '5%';
-    
+      let displayVal = String(val);
+      if (productivityRe.test(h)) {
+        const low = displayVal.toLowerCase();
+        if (low.includes('lots')) displayVal = '100%';
+        else if (low.includes('decent')) displayVal = '75%';
+        else if (low.includes('got some') || low.includes('not a lot')) displayVal = '25%';
+        else if (low.includes('barely')) displayVal = '5%';
+      }
 
       // display each field as two-column row inside details
       const line = document.createElement('div');
