@@ -329,24 +329,8 @@ function renderResponses(container, rows) {
       }
     }
 
-    // move the time length response into row 2 column 1 (omit label)
-    if (timeKey) {
-      const timeVal = String(row[timeKey] || '').trim();
-      if (timeVal) {
-        const timeEl = document.createElement('div');
-        timeEl.textContent = timeVal;
-        timeEl.style.gridColumn = '1 / 2';
-        timeEl.style.gridRow = '2 / 3';
-        timeEl.style.alignSelf = 'center';
-        timeEl.style.justifySelf = 'end';
-        timeEl.style.fontSize = '15px';
-        timeEl.style.fontWeight = '600';
-        timeEl.style.padding = '4px 6px';
-        timeEl.style.background = 'transparent';
-        timeEl.style.borderRadius = '4px';
-        card.appendChild(timeEl);
-      }
-    }
+    // removed: responses that used to render in grid row 2 (time length and second preferred-time image)
+    // This keeps row 2 empty so nothing from the CSV is placed at gridRow '2 / 3'.
 
     // study-mode image in first row, second column
     if (studyKey) {
