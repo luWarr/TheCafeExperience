@@ -250,6 +250,9 @@ function renderResponses(container, rows) {
     return /when ordering drinks|what kind of drink|drink do you buy|type of drink/i.test(low);
   }) || null;
 
+  // detect productivity question header so we can render its image in row 4
+  const productivityKey = headers.find(h => /how much work do you normally get done/i.test((h || '').toLowerCase())) || null;
+  
   rows.forEach((row, i) => {
     const card = document.createElement('article');
 
@@ -493,6 +496,31 @@ function renderResponses(container, rows) {
       img.style.marginTop = '6px';
       card.appendChild(img);
     })();
+
+    // render productivity image in row 4 spanning columns 1-2
+    if (productivityKey) {
+      const rawProd = String(row[productivityKey] || '').trim().toLowerCase();
+      let prodImg = null;
+      if (rawProd.includes('lots')) prodImg = 'images/100.png';
+      else if (rawProd.includes('decent')) prodImg = 'images/75.png';
+      else if (rawProd.includes('got some') || rawProd.includes('not a lot') || rawProd.includes('got some stuff')) prodImg = 'images/50.png';
+      else if (rawProd.includes('barely')) prodImg = 'images/5.png';
+
+      if (prodImg) {
+        const pImg = document.createElement('img');
+        pImg.src = prodImg;
+        pImg.alt = rawProd || 'productivity';
+        pImg.style.width = '80px';
+        pImg.style.height = '80px';
+        pImg.style.objectFit = 'contain';
+        pImg.style.gridColumn = '1 / 3'; // spans col 1 and 2
+        pImg.style.gridRow = '4 / 5';    // row 4
+        pImg.style.justifySelf = 'center';
+        pImg.style.alignSelf = 'center';
+        pImg.style.pointerEvents = 'none';
+        card.appendChild(pImg);
+      }
+    }
 
     list.appendChild(card);
   });
