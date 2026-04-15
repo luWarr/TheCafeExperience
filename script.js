@@ -304,6 +304,26 @@ function renderResponses(container, rows) {
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
+    // place the "how long" response into column 1, row 1 (bottom-center)
+    if (timeKey) {
+      const timeVal = String(row[timeKey] || '').trim();
+      if (timeVal) {
+        const timeEl = document.createElement('div');
+        timeEl.textContent = timeVal;
+        timeEl.style.gridColumn = '1 / 2';
+        timeEl.style.gridRow = '1 / 2';
+        timeEl.style.alignSelf = 'end';     // bottom of the cell
+        timeEl.style.justifySelf = 'center';// center horizontally
+        timeEl.style.fontSize = '13px';
+        timeEl.style.fontWeight = '600';
+        timeEl.style.background = 'rgba(255,255,255,0.8)';
+        timeEl.style.padding = '4px 8px';
+        timeEl.style.borderRadius = '4px';
+        timeEl.style.pointerEvents = 'none';
+        card.appendChild(timeEl);
+      }
+    }
+ 
     // place preferred-time image into column 1, row 1 bottom-left (replaces text)
     if (timePrefKey) {
       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
