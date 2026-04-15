@@ -304,13 +304,13 @@ function renderResponses(container, rows) {
     title.style.gridRow = '1 / 2';
     card.appendChild(title);
 
-    // place preferred-time text into column 1, row 1 bottom-left (replaces text)
+    // place preferred-time image into column 1, row 1 bottom-left (replaces text)
     if (timePrefKey) {
       const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
       let prefImg = null;
-      if (rawPref.includes('morn')) prefImg = 'images/morning.png';
-      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.png';
-      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.png';
+      if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
 
       if (prefImg) {
         const prefEl = document.createElement('img');
