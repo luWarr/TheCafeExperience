@@ -316,8 +316,8 @@ function renderResponses(container, rows) {
         timeEl.style.justifySelf = 'center';// center horizontally
         timeEl.style.fontSize = '13px';
         timeEl.style.fontWeight = '600';
-        timeEl.style.paddingLeft = '70px';
-        timeEl.style.paddingBottom = '70px';
+        timeEl.style.paddingLeft = '50px';
+        timeEl.style.paddingBottom = '120px';
         timeEl.style.borderRadius = '4px';
         timeEl.style.pointerEvents = 'none';
         card.appendChild(timeEl);
