@@ -354,30 +354,30 @@ function renderResponses(container, rows) {
       }
     }
 
-    // // preferred time-of-day image in row 2 column 2
-    // if (timePrefKey) {
-    //   const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
-    //   let prefImg = null;
-    //   if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
-    //   else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
-    //   else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
+    // preferred time-of-day image in row 2 column 2
+    if (timePrefKey) {
+      const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
+      let prefImg = null;
+      if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
+      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
+      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
 
-    //   if (prefImg) {
-    //     const pImg = document.createElement('img');
-    //     pImg.src = prefImg;
-    //     pImg.alt = rawPref || 'preferred time';
-    //     // fixed size 40x40 and centered within the grid cell
-    //     pImg.style.width = '40px';
-    //     pImg.style.height = '40px';
-    //     pImg.style.objectFit = 'contain';
-    //     pImg.style.margin = '0';
-    //     pImg.style.gridColumn = '2 / 1';
-    //     pImg.style.gridRow = '2 / 3';
-    //     pImg.style.justifySelf = 'start';
-    //     pImg.style.alignSelf = 'center';
-    //     card.appendChild(pImg);
-    //   }
-    // }
+      if (prefImg) {
+        const pImg = document.createElement('img');
+        pImg.src = prefImg;
+        pImg.alt = rawPref || 'preferred time';
+        // fixed size 40x40 and centered within the grid cell
+        pImg.style.width = '40px';
+        pImg.style.height = '40px';
+        pImg.style.objectFit = 'contain';
+        pImg.style.margin = '0';
+        pImg.style.gridColumn = '2 / 1';
+        pImg.style.gridRow = '2 / 3';
+        pImg.style.justifySelf = 'start';
+        pImg.style.alignSelf = 'center';
+        card.appendChild(pImg);
+      }
+    }
 
     // details container occupies rows 3-5 and spans both columns
     const details = document.createElement('div');
