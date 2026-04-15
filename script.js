@@ -482,7 +482,7 @@ function renderResponses(container, rows) {
       const img = document.createElement('img');
       img.src = barcodeSrc;
       img.alt = 'barcode';
-      img.style.width = 'auto';
+      img.style.width = '243px';
       img.style.height = '200px';
       img.style.objectFit = 'contain';
       // place in final grid row
