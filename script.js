@@ -483,7 +483,7 @@ function renderResponses(container, rows) {
       img.src = barcodeSrc;
       img.alt = 'barcode';
       img.style.width = '243px';
-      img.style.height = '200px';
+      img.style.height = '50px;';
       img.style.objectFit = 'contain';
       // place in final grid row
       img.style.gridColumn = '1 / -1';
