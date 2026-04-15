@@ -317,7 +317,7 @@ function renderResponses(container, rows) {
         timeEl.style.fontSize = '13px';
         timeEl.style.fontWeight = '600';
         timeEl.style.paddingLeft = '50px';
-        timeEl.style.paddingBottom = '30px';
+        timeEl.style.paddingBottom = '20px';
         timeEl.style.borderRadius = '4px';
         timeEl.style.pointerEvents = 'none';
         card.appendChild(timeEl);
