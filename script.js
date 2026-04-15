@@ -329,8 +329,17 @@ function renderResponses(container, rows) {
       }
     }
 
-    // removed: responses that used to render in grid row 2 (time length and second preferred-time image)
-    // This keeps row 2 empty so nothing from the CSV is placed at gridRow '2 / 3'.
+    // row 2 divider spanning both columns
+    const divider = document.createElement('div');
+    divider.textContent = '----------------------------------';
+    divider.style.gridColumn = '1 / -1';
+    divider.style.gridRow = '2 / 3';
+    divider.style.alignSelf = 'center';
+    divider.style.justifySelf = 'center';
+    divider.style.fontFamily = 'sans-serif';
+    divider.style.opacity = '0.9';
+    divider.style.pointerEvents = 'none';
+    card.appendChild(divider);
 
     // study-mode image in first row, second column
     if (studyKey) {
@@ -354,30 +363,6 @@ function renderResponses(container, rows) {
       }
     }
 
-    // preferred time-of-day image in row 2 column 2
-    if (timePrefKey) {
-      const rawPref = String(row[timePrefKey] || '').trim().toLowerCase();
-      let prefImg = null;
-      if (rawPref.includes('morn')) prefImg = 'images/morning.svg';
-      else if (rawPref.includes('afternoon') || rawPref.includes('midday')) prefImg = 'images/midday.svg';
-      else if (rawPref.includes('night') || rawPref.includes('evening')) prefImg = 'images/night.svg';
-
-      if (prefImg) {
-        const pImg = document.createElement('img');
-        pImg.src = prefImg;
-        pImg.alt = rawPref || 'preferred time';
-        // fixed size 40x40 and centered within the grid cell
-        pImg.style.width = '40px';
-        pImg.style.height = '40px';
-        pImg.style.objectFit = 'contain';
-        pImg.style.margin = '0';
-        pImg.style.gridColumn = '2 / 1';
-        pImg.style.gridRow = '2 / 3';
-        pImg.style.justifySelf = 'start';
-        pImg.style.alignSelf = 'center';
-        card.appendChild(pImg);
-      }
-    }
 
     // details container occupies rows 3-5 and spans both columns
     const details = document.createElement('div');
