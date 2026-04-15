@@ -392,7 +392,8 @@ function renderResponses(container, rows) {
     details.style.overflowY = 'auto';
     details.style.paddingRight = '6px';
     details.style.gridColumn = '1 / -1';
-    details.style.gridRow = '3 / 6';
+    // keep details in row 3 only so row 4 remains empty
+    details.style.gridRow = '3 / 4';
     details.style.paddingTop = '6px';
     card.appendChild(details);
 
@@ -452,14 +453,14 @@ function renderResponses(container, rows) {
       const keyText = productivityRe.test(h) ? 'productivity:' : h;
 
       // map productivity responses to percentages
-      let displayVal = String(val);
-      if (productivityRe.test(h)) {
-        const low = displayVal.toLowerCase();
-        if (low.includes('lots')) displayVal = '100%';
-        else if (low.includes('decent')) displayVal = '75%';
-        else if (low.includes('got some') || low.includes('not a lot')) displayVal = '25%';
-        else if (low.includes('barely')) displayVal = '5%';
-      }
+      // let displayVal = String(val);
+      // if (productivityRe.test(h)) {
+      //   const low = displayVal.toLowerCase();
+      //   if (low.includes('lots')) displayVal = '100%';
+      //   else if (low.includes('decent')) displayVal = '75%';
+      //   else if (low.includes('got some') || low.includes('not a lot')) displayVal = '25%';
+      //   else if (low.includes('barely')) displayVal = '5%';
+    
 
       // display each field as two-column row inside details
       const line = document.createElement('div');
