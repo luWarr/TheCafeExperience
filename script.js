@@ -335,7 +335,7 @@ function renderResponses(container, rows) {
     divider.style.gridColumn = '1 / -1';
     divider.style.gridRow = '2 / 3';
     divider.style.alignSelf = 'center';
-    divider.style.justifySelf = 'center';
+    divider.style.justifySelf = 'start';
     divider.style.fontFamily = 'sans-serif';
     divider.style.opacity = '0.9';
     divider.style.pointerEvents = 'none';
