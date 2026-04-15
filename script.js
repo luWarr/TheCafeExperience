@@ -510,7 +510,7 @@ function renderResponses(container, rows) {
         const pImg = document.createElement('img');
         pImg.src = prodImg;
         pImg.alt = rawProd || 'productivity';
-        pImg.style.width = '270px';
+        pImg.style.width = '250px';
         pImg.style.height = 'auto';
         pImg.style.objectFit = 'contain';
         pImg.style.gridColumn = '1 / 3'; // spans col 1 and 2
